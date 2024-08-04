@@ -1,4 +1,4 @@
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -20,23 +20,48 @@ using NM.Studio.Handler;
 using NM.Studio.Services;
 using NM.Studio.Data.Repositories.Photos;
 using NM.Studio.Data.Repositories.Services;
+using NM.Studio.Domain.Contracts.Repositories.Outfits;
+using NM.Studio.Data.Repositories.Outfits;
+using NM.Studio.Domain.Contracts.Services.Outfits;
+using NM.Studio.Domain.Middleware;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 #region Add-DbContext
 builder.Services.AddDbContext<StudioContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 #endregion
 
-builder.Services.AddControllers();
-
-#region Config-Json
 builder.Services.AddControllers().AddJsonOptions(x =>
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
-
-#endregion
-
-#region Add-AutoMapper
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Please enter token",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "bearer"
+    });
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                },
+            },
+            new string[]{}
+        }
+    });
+});
+builder.Services.AddHttpContextAccessor(); 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
-#endregion
 
 #region Add-MediaR
 
@@ -52,15 +77,15 @@ builder.Services.AddMediatR(Assembly.GetExecutingAssembly(), handler);
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-
+builder.Services.AddScoped<IOutfitRepository, OutfitRepository>();
 builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
 builder.Services.AddScoped<IPhotoRepository, PhotoRepository>();
-
 
 #endregion
 
 #region Add-Transient
 builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddTransient<IOutfitService, OutfitService>();
 
 builder.Services.AddTransient<IServiceService, ServiceService>();
 
@@ -84,11 +109,12 @@ builder.Services.AddAuthentication(x =>
             ValidateIssuer = false,
             ValidateAudience = false,
             ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
+            ValidateIssuerSigningKey = false,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
                 builder.Configuration.GetValue<string>("Appsettings:Token"))),
             ClockSkew = TimeSpan.Zero
         };
+        options.Configuration = new OpenIdConnectConfiguration();
     });
 
 builder.Services.AddAuthorization();
@@ -96,32 +122,42 @@ builder.Services.AddAuthorization();
 
 #region Add-Cors
 
-builder.Services.AddCors(p => p.AddPolicy("admin", build =>
+builder.Services.AddCors(options =>
 {
-    build.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
-}));
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 
 #endregion
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// -----------------app-------------------------
+
 var app = builder.Build();
-// Configure the HTTP request pipeline.
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<TokenUserMiddleware>();
+app.UseRouting();
+
 app.UseHttpsRedirection();
 
-app.UseCors("admin");
+app.UseCors();
 
 app.UseAuthentication();
 
 app.UseAuthorization();
 
 app.MapControllers();
-
 
 app.Run();

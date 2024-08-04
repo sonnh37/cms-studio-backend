@@ -5,18 +5,13 @@ namespace NM.Studio.Domain.CQRS.Commands.Services
 {
     public class ServiceUpdateCommand : UpdateCommand<ServiceView>
     {
-        public string ServiceTittle { get; set; }
+        public string? Tittle { get; set; }
 
-        public string? ServiceDescription { get; set; }
+        public string? Description { get; set; }
 
         public string? Type { get; set; }
 
-        public double Price { get; set; }
+        public string? Url { get; set; }
 
-        public string? Status { get; set; }
-
-        public string LastUpdatedBy { get; set; }
-        public DateTime? LastUpdatedDate { get; set; }
-        public bool IsDeleted { get; set; }
     }
 }

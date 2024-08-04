@@ -10,6 +10,12 @@ using NM.Studio.Domain.Models.Messages;
 using NM.Studio.Domain.Results.Bases;
 using NM.Studio.Domain.Results.Messages;
 using NM.Studio.Domain.Utilities;
+using NM.Studio.Domain.Contracts.Repositories.Users;
+using NM.Studio.Domain.Entities;
+using NM.Studio.Domain.Contracts.Services.Outfits;
+using NM.Studio.Domain.Contracts.Services.Users;
+using NM.Studio.Domain.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace NM.Studio.Services.Bases
 {
@@ -21,15 +27,16 @@ namespace NM.Studio.Services.Bases
         where TEntity : BaseEntity
     {
         protected readonly IMapper _mapper;
-
         protected readonly IBaseRepository<TEntity> _baseRepository;
         protected readonly IUnitOfWork _unitOfWork;
+        protected readonly IHttpContextAccessor _httpContextAccessor;
 
-        protected BaseService(IMapper mapper, IUnitOfWork unitOfWork)
+        protected BaseService(IMapper mapper, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _baseRepository = _unitOfWork.GetRepositoryByEntity<TEntity>();
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<MessageView<TView>> CreateOrUpdate<TView>(CreateOrUpdateCommand<TView> createOrUpdateCommand) where TView : BaseView
@@ -56,6 +63,7 @@ namespace NM.Studio.Services.Bases
                     return null;
                 }
                 _mapper.Map(updateCommand, entity);
+                SetBaseEntityUpdate(entity);
                 _baseRepository.Update(entity);
             }
             else
@@ -67,6 +75,7 @@ namespace NM.Studio.Services.Bases
                     return null;
                 }
                 entity.Id = Guid.NewGuid();
+                SetBaseEntityCreate(entity);
                 _baseRepository.Add(entity);
             }
 
@@ -74,6 +83,43 @@ namespace NM.Studio.Services.Bases
             return saveChanges ? entity : default;
         }
 
+        public TEntity SetBaseEntityCreate(TEntity entity)
+        {
+
+            var user = _httpContextAccessor.HttpContext.Items["User"] as User;
+            if (user != null)
+            {
+                // đã đăng nhập
+                entity.Id = Guid.NewGuid();
+                entity.CreatedBy = user.Email;
+                entity.CreatedDate = DateTime.Now;
+                entity.LastUpdatedBy = user.Email;
+                entity.LastUpdatedDate = entity.CreatedDate;
+                entity.IsDeleted = false;
+            }
+            else
+            {
+                entity.Id = Guid.NewGuid();
+                entity.CreatedDate = DateTime.Now;
+                entity.IsDeleted = false;
+            }
+
+            return entity;
+        }
+
+        public TEntity SetBaseEntityUpdate(TEntity entity)
+        {
+
+            var user = _httpContextAccessor.HttpContext.Items["User"] as User;
+            if (user != null)
+            {
+                entity.LastUpdatedBy = user.Email;
+                entity.LastUpdatedDate = DateTime.Now;
+            }
+
+            return entity;
+        }
+        
         public async Task<MessageResults<TResult>> GetAll<TResult>() where TResult : BaseResult
         {
             // call repo

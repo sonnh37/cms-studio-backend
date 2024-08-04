@@ -13,24 +13,18 @@ namespace NM.Studio.Data.Repositories.Users
         public UserRepository(StudioContext dbContext, IMapper mapper) : base(dbContext, mapper)
         {
         }
-        public async Task<User> FindUsernameOrEmail(AuthQuery authQuery)
+        public async Task<User> FindUsernameOrEmail(AuthQuery user)
         {
             var queryable = base.GetQueryable();
-
-            // Apply base filtering: not deleted
             queryable = queryable.Where(entity => !entity.IsDeleted);
 
-            // Check username or email
-            if (!string.IsNullOrEmpty(authQuery.UserNameOrEmail))
+            if (!string.IsNullOrEmpty(user.Username) || !string.IsNullOrEmpty(user.Email))
             {
-                queryable = queryable.Where(entity => authQuery.UserNameOrEmail.ToLower() == entity.Username.ToLower()
-                                            || authQuery.UserNameOrEmail.ToLower() == entity.Email.ToLower()
+                queryable = queryable.Where(entity => user.Username.ToLower() == entity.Username.ToLower()
+                                            || user.Email.ToLower() == entity.Email.ToLower()
                 );
             }
 
-            // Include related EventXPhotos
-
-            // Execute the query asynchronously
             var result = await queryable.SingleOrDefaultAsync();
 
             return result;

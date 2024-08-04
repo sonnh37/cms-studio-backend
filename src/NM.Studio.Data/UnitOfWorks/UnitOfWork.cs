@@ -3,6 +3,7 @@ using NM.Studio.Domain.Contracts.Repositories.Services;
 using NM.Studio.Domain.Contracts.Repositories.Users;
 using NM.Studio.Domain.Contracts.UnitOfWorks;
 using NM.Studio.Data.Context;
+using NM.Studio.Domain.Contracts.Repositories.Outfits;
 
 namespace NM.Studio.Data.UnitOfWorks
 {
@@ -18,5 +19,6 @@ namespace NM.Studio.Data.UnitOfWorks
 
         public IServiceRepository ServiceRepository => GetRepository<IServiceRepository>();
 
+        public IOutfitRepository OutfitRepository => GetRepository<IOutfitRepository>();
     }
 }

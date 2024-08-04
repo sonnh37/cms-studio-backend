@@ -15,6 +15,7 @@ using System.Text;
 namespace NM.Studio.Services
 {
     using BCrypt.Net;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Configuration;
     using Microsoft.IdentityModel.Tokens;
     using NM.Studio.Domain.Entities;
@@ -24,12 +25,15 @@ namespace NM.Studio.Services
     public class UserService : BaseService<User>, IUserService
     {
         private readonly IUserRepository _userRepository;
-
         private readonly IConfiguration _configuration;
-
         private DateTime countDown = DateTime.Now.AddMinutes(30);
 
-        public UserService(IMapper mapper, IUnitOfWork unitOfWork, IConfiguration configuration) : base(mapper, unitOfWork)
+        public UserService(
+            IMapper mapper,
+            IUnitOfWork unitOfWork,
+            IConfiguration configuration,
+            IHttpContextAccessor httpContextAccessor)
+            : base(mapper, unitOfWork, httpContextAccessor)
         {
             _userRepository = unitOfWork.UserRepository;
             _configuration = configuration;
@@ -37,7 +41,7 @@ namespace NM.Studio.Services
 
         public async Task<MessageLoginResult<UserResult>> Login(AuthQuery x, CancellationToken cancellationToken = default)
         {
-            // check username or email
+            // Check username or email
             User user = await _userRepository.FindUsernameOrEmail(x);
             UserResult userResult = new UserResult();
 
@@ -46,11 +50,10 @@ namespace NM.Studio.Services
                 return AppMessage.GetMessageLoginResult(userResult, null, null);
             }
 
-            // check password
+            // Check password
             bool isPasswordValid = BCrypt.Verify(x.Password, user.Password);
             if (!isPasswordValid)
             {
-                // Nếu mật khẩu không khớp, trả lại thông tin không hợp lệ
                 return AppMessage.GetMessageLoginResult(userResult, null, null);
             }
 
@@ -72,10 +75,10 @@ namespace NM.Studio.Services
         private JwtSecurityToken CreateToken(User user)
         {
             List<Claim> claims = new List<Claim>
-            {
-                new Claim(JwtRegisteredClaimNames.Name, user.Username),
-            };
-            // Conditional addition of claim based on function result
+        {
+            new Claim(JwtRegisteredClaimNames.Sub, user.Username),
+        };
+
             if (!string.IsNullOrEmpty(user.Email))
             {
                 claims.Add(new Claim(JwtRegisteredClaimNames.Email, user.Email));
@@ -90,9 +93,10 @@ namespace NM.Studio.Services
                 claims: claims,
                 signingCredentials: creds,
                 expires: countDown
-                );
+            );
 
             return token;
         }
     }
+
 }

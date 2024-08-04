@@ -8,6 +8,7 @@ using NM.Studio.Services.Bases;
 using NM.Studio.Domain.CQRS.Queries.Photos;
 using NM.Studio.Domain.Entities;
 using NM.Studio.Domain.Results;
+using Microsoft.AspNetCore.Http;
 
 namespace NM.Studio.Services
 {
@@ -15,7 +16,10 @@ namespace NM.Studio.Services
     {
         private readonly IPhotoRepository _photoRepository;
 
-        public PhotoService(IMapper mapper, IUnitOfWork unitOfWork) : base(mapper, unitOfWork)
+        public PhotoService(IMapper mapper,
+            IUnitOfWork unitOfWork,
+            IHttpContextAccessor httpContextAccessor) 
+            : base(mapper, unitOfWork, httpContextAccessor)
         {
             _photoRepository = _unitOfWork.PhotoRepository;
         }

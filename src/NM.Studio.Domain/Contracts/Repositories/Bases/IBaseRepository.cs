@@ -1,4 +1,6 @@
 ﻿using NM.Studio.Domain.CQRS.Queries.Common;
+using NM.Studio.Domain.CQRS.Queries.Outfits;
+using NM.Studio.Domain.Entities;
 using NM.Studio.Domain.Entities.Bases;
 
 namespace NM.Studio.Domain.Contracts.Repositories.Bases
@@ -28,6 +30,5 @@ namespace NM.Studio.Domain.Contracts.Repositories.Bases
         void Delete(TEntity entity);
         void DeleteRange(IEnumerable<TEntity> entities);
         void CheckCancellationToken(CancellationToken cancellationToken = default);
-
     }
 }

@@ -24,10 +24,6 @@ namespace NM.Studio.Data.Repositories.Photos
             queryable = queryable.Where(entity => !entity.IsDeleted);
 
             // Additional filtering based on PhotoIds (exclude these IDs if given)
-            if (query.PhotoIds != null && query.PhotoIds.Count > 0)
-            {
-                queryable = queryable.Where(entity => !query.PhotoIds.Contains(entity.Id));
-            }
 
             // Include related EventXPhotos
 

@@ -7,6 +7,7 @@
             UserMapping();
             ServiceMapping();
             PhotoMapping();
+            OutfitMapping();
         }
         
     }

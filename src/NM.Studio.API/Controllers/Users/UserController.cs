@@ -1,54 +1,64 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NM.Studio.API.Controllers.Base;
 using NM.Studio.Domain.CQRS.Commands.Users;
 using NM.Studio.Domain.CQRS.Queries.Users;
-using NM.Studio.Domain.Models;
 using NM.Studio.Domain.Models.Messages;
-using NM.Studio.Domain.Results;
+using NM.Studio.Domain.Models;
 using NM.Studio.Domain.Results.Messages;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using NM.Studio.Domain.Results;
 
 namespace NM.Studio.API.Controllers.Users
 {
     [Authorize]
-    [Route("api/user")]
+    [Route("user-management/users")]
     public class UserController : BaseController
     {
         public UserController(IMediator mediator) : base(mediator)
         {
         }
 
-        [HttpPost("get-user-list")]
-        public async Task<IActionResult> GetAll([FromBody] UserGetAllQuery userGetAllQuery)
+        [HttpGet]
+        public async Task<IActionResult> GetAll([FromQuery] UserGetAllQuery userGetAllQuery)
         {
             MessageResults<UserResult> messageResult = await _mediator.Send(userGetAllQuery);
+
             return Ok(messageResult);
         }
 
-        // GET api/<UserController>/5
-        [HttpPost("get-by-id")]
-        public async Task<IActionResult> GetById([FromBody] UserGetByIdQuery userGetByIdQuery)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
+            UserGetByIdQuery userGetByIdQuery = new UserGetByIdQuery();
+            userGetByIdQuery.Id = id;
             MessageResult<UserResult> messageResult = await _mediator.Send(userGetByIdQuery);
+
             return Ok(messageResult);
         }
 
-        // PUT api/<UserController>/5
-        [HttpPost("update-user")]
-        public async Task<IActionResult> Update([FromBody] UserUpdateCommand userUpdateCommand)
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] UserCreateCommand userCreateCommand)
         {
-            MessageView<UserView> messageView = await _mediator.Send(userUpdateCommand);
+            MessageView<UserView> messageView = await _mediator.Send(userCreateCommand);
+
             return Ok(messageView);
         }
 
-        // DELETE api/<UserController>/5
-        [HttpPost("delete-user")]
-        public async Task<IActionResult> Delete([FromBody] UserDeleteCommand userDeleteCommand)
+        [HttpPut]
+        public async Task<IActionResult> Update([FromQuery] UserUpdateCommand userUpdateCommand)
+        {
+            MessageView<UserView> messageView = await _mediator.Send(userUpdateCommand);
+
+            return Ok(messageView);
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> Delete([FromQuery] UserDeleteCommand userDeleteCommand)
         {
             MessageView<UserView> messageView = await _mediator.Send(userDeleteCommand);
+
             return Ok(messageView);
         }
 
@@ -70,3 +80,8 @@ namespace NM.Studio.API.Controllers.Users
         }
     }
 }
+
+
+
+
+
