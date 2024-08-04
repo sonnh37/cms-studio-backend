@@ -31,9 +31,8 @@ namespace NM.Studio.Services
         public UserService(
             IMapper mapper,
             IUnitOfWork unitOfWork,
-            IConfiguration configuration,
-            IHttpContextAccessor httpContextAccessor)
-            : base(mapper, unitOfWork, httpContextAccessor)
+            IConfiguration configuration)
+            : base(mapper, unitOfWork)
         {
             _userRepository = unitOfWork.UserRepository;
             _configuration = configuration;

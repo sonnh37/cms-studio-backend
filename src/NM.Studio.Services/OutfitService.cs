@@ -22,9 +22,8 @@ namespace NM.Studio.Services
         private readonly IOutfitRepository _outfitRepository;
 
         public OutfitService(IMapper mapper,
-            IUnitOfWork unitOfWork, 
-            IHttpContextAccessor httpContextAccessor) 
-            : base(mapper, unitOfWork, httpContextAccessor)
+            IUnitOfWork unitOfWork)
+            : base(mapper, unitOfWork)
         {
             _outfitRepository = _unitOfWork.OutfitRepository;
         }

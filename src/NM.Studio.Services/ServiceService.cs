@@ -18,9 +18,8 @@ namespace NM.Studio.Services
         private readonly IServiceRepository _serviceRepository;
 
         public ServiceService(IMapper mapper,
-            IUnitOfWork unitOfWork,
-            IHttpContextAccessor httpContextAccessor) 
-            : base(mapper, unitOfWork, httpContextAccessor)
+            IUnitOfWork unitOfWork)
+            : base(mapper, unitOfWork)
         {
             _serviceRepository = _unitOfWork.ServiceRepository;
         }

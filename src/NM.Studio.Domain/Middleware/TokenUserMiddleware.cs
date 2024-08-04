@@ -23,6 +23,7 @@ namespace NM.Studio.Domain.Middleware
 
         public async Task InvokeAsync(HttpContext context)
         {
+            StaticUser.User = null;
             if (context.Request.Headers.ContainsKey("Authorization"))
             {
                 var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
@@ -36,8 +37,7 @@ namespace NM.Studio.Domain.Middleware
                             var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
                             var userRepository = unitOfWork.UserRepository;
                             var user = await userRepository.FindUsernameOrEmail(new AuthQuery { Email = email, Username = username });
-
-                            context.Items["User"] = user;
+                            StaticUser.User = user;
                         }
                     }
                 }

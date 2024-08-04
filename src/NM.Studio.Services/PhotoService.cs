@@ -17,9 +17,8 @@ namespace NM.Studio.Services
         private readonly IPhotoRepository _photoRepository;
 
         public PhotoService(IMapper mapper,
-            IUnitOfWork unitOfWork,
-            IHttpContextAccessor httpContextAccessor) 
-            : base(mapper, unitOfWork, httpContextAccessor)
+            IUnitOfWork unitOfWork)
+            : base(mapper, unitOfWork)
         {
             _photoRepository = _unitOfWork.PhotoRepository;
         }

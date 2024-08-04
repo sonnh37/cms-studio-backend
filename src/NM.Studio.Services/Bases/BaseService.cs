@@ -29,14 +29,12 @@ namespace NM.Studio.Services.Bases
         protected readonly IMapper _mapper;
         protected readonly IBaseRepository<TEntity> _baseRepository;
         protected readonly IUnitOfWork _unitOfWork;
-        protected readonly IHttpContextAccessor _httpContextAccessor;
 
-        protected BaseService(IMapper mapper, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor)
+        protected BaseService(IMapper mapper, IUnitOfWork unitOfWork)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _baseRepository = _unitOfWork.GetRepositoryByEntity<TEntity>();
-            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<MessageView<TView>> CreateOrUpdate<TView>(CreateOrUpdateCommand<TView> createOrUpdateCommand) where TView : BaseView
@@ -86,7 +84,7 @@ namespace NM.Studio.Services.Bases
         public TEntity SetBaseEntityCreate(TEntity entity)
         {
 
-            var user = _httpContextAccessor.HttpContext.Items["User"] as User;
+            var user = StaticUser.User;
             if (user != null)
             {
                 // đã đăng nhập
@@ -110,7 +108,7 @@ namespace NM.Studio.Services.Bases
         public TEntity SetBaseEntityUpdate(TEntity entity)
         {
 
-            var user = _httpContextAccessor.HttpContext.Items["User"] as User;
+            var user = StaticUser.User;
             if (user != null)
             {
                 entity.LastUpdatedBy = user.Email;
