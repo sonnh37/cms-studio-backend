@@ -8,7 +8,6 @@ using NM.Studio.Services.Bases;
 using NM.Studio.Domain.CQRS.Queries.Photos;
 using NM.Studio.Domain.Entities;
 using NM.Studio.Domain.Results;
-using Microsoft.AspNetCore.Http;
 
 namespace NM.Studio.Services
 {

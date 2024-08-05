@@ -27,12 +27,13 @@ namespace NM.Studio.Data.Context
                 optionsBuilder.UseSqlServer(GetConnectionString());
             }
         }
+
         private string GetConnectionString()
         {
             IConfiguration config = new ConfigurationBuilder()
              .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", true, true)
-            .Build();
+             .AddJsonFile("appsettings.json", true, true)
+             .Build();
             var strConn = /*config["ConnectionStrings:DB"]*/ config.GetConnectionString("DefaultConnection");
 
             return strConn;
@@ -42,7 +43,10 @@ namespace NM.Studio.Data.Context
         {
             modelBuilder.Entity<Outfit>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.ToTable("Outfit");
+                entity.Property(e => e.Id)
+                    .ValueGeneratedOnAdd()
+                    .HasDefaultValueSql("NEWID()");
 
                 entity.Property(e => e.Price).HasColumnType("decimal(18, 2)");
             });
@@ -51,27 +55,32 @@ namespace NM.Studio.Data.Context
             {
                 entity.ToTable("Photo");
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id)
+                    .ValueGeneratedOnAdd()
+                    .HasDefaultValueSql("NEWID()");
             });
 
             modelBuilder.Entity<Service>(entity =>
             {
                 entity.ToTable("Service");
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id)
+                    .ValueGeneratedOnAdd()
+                    .HasDefaultValueSql("NEWID()");
             });
 
             modelBuilder.Entity<User>(entity =>
             {
                 entity.ToTable("User");
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id)
+                    .ValueGeneratedOnAdd()
+                    .HasDefaultValueSql("NEWID()");
             });
 
             OnModelCreatingPartial(modelBuilder);
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
-
     }
 }

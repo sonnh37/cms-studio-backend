@@ -12,7 +12,7 @@ using NM.Studio.Domain.Results;
 
 namespace NM.Studio.API.Controllers.Photos
 {
-    [Authorize]
+    //[Authorize]
     [Route("photo-management/photos")]
     public class PhotoController : BaseController
     {

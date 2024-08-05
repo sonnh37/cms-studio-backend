@@ -12,7 +12,7 @@ using NM.Studio.Domain.Results;
 
 namespace NM.Studio.API.Controllers.Outfits
 {
-    [Authorize]
+    //[Authorize]
     [Route("outfit-management/outfits")]
     public class OutfitController : BaseController
     {

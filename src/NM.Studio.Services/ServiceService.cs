@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Serilog;
 using NM.Studio.Domain.Contracts.Repositories.Services;
 using NM.Studio.Domain.Contracts.Services.Services;
 using NM.Studio.Domain.Contracts.UnitOfWorks;
@@ -9,7 +8,6 @@ using NM.Studio.Domain.Utilities;
 using NM.Studio.Services.Bases;
 using NM.Studio.Domain.Entities;
 using NM.Studio.Domain.Results;
-using Microsoft.AspNetCore.Http;
 
 namespace NM.Studio.Services
 {

@@ -12,7 +12,7 @@ using NM.Studio.Domain.Results;
 
 namespace NM.Studio.API.Controllers.Services
 {
-    [Authorize]
+    //[Authorize]
     [Route("service-management/services")]
     public class ServiceController : BaseController
     {

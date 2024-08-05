@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NM.Studio.Data.Context;
 
@@ -11,9 +12,10 @@ using NM.Studio.Data.Context;
 namespace NM.Studio.Data.Migrations
 {
     [DbContext(typeof(StudioContext))]
-    partial class StudioContextModelSnapshot : ModelSnapshot
+    [Migration("20240805165437_V2")]
+    partial class V2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

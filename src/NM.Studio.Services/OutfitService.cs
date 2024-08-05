@@ -7,13 +7,7 @@ using NM.Studio.Domain.Results.Messages;
 using NM.Studio.Domain.Results;
 using NM.Studio.Domain.Utilities;
 using NM.Studio.Services.Bases;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NM.Studio.Domain.Entities;
-using Microsoft.AspNetCore.Http;
 
 namespace NM.Studio.Services
 {

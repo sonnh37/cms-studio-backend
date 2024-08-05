@@ -15,7 +15,6 @@ using System.Text;
 namespace NM.Studio.Services
 {
     using BCrypt.Net;
-    using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Configuration;
     using Microsoft.IdentityModel.Tokens;
     using NM.Studio.Domain.Entities;
@@ -41,8 +40,8 @@ namespace NM.Studio.Services
         public async Task<MessageLoginResult<UserResult>> Login(AuthQuery x, CancellationToken cancellationToken = default)
         {
             // Check username or email
-            User user = await _userRepository.FindUsernameOrEmail(x);
-            UserResult userResult = new UserResult();
+            var user = await _userRepository.FindUsernameOrEmail(x);
+            var userResult = new UserResult();
 
             if (user == null)
             {
@@ -50,14 +49,14 @@ namespace NM.Studio.Services
             }
 
             // Check password
-            bool isPasswordValid = BCrypt.Verify(x.Password, user.Password);
+            var isPasswordValid = BCrypt.Verify(x.Password, user.Password);
             if (!isPasswordValid)
             {
                 return AppMessage.GetMessageLoginResult(userResult, null, null);
             }
 
             userResult = _mapper.Map<User, UserResult>(user);
-            JwtSecurityToken token = CreateToken(user);
+            var token = CreateToken(user);
             var msgResult = AppMessage.GetMessageLoginResult(userResult,
                 new JwtSecurityTokenHandler().WriteToken(token),
                 token.ValidTo.ToString());
@@ -73,7 +72,7 @@ namespace NM.Studio.Services
 
         private JwtSecurityToken CreateToken(User user)
         {
-            List<Claim> claims = new List<Claim>
+            var claims = new List<Claim>
         {
             new Claim(JwtRegisteredClaimNames.Sub, user.Username),
         };
@@ -86,11 +85,11 @@ namespace NM.Studio.Services
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
                 _configuration.GetSection("Appsettings:Token").Value));
 
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var creeds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
                 claims: claims,
-                signingCredentials: creds,
+                signingCredentials: creeds,
                 expires: countDown
             );
 
