@@ -1,14 +1,13 @@
-﻿namespace NM.Studio.Domain.Configs.Mapping
+﻿namespace NM.Studio.Domain.Configs.Mapping;
+
+public partial class MappingProfile
 {
-    public partial class MappingProfile
+    public MappingProfile()
     {
-        public MappingProfile()
-        {
-            UserMapping();
-            ServiceMapping();
-            PhotoMapping();
-            OutfitMapping();
-        }
-        
+        UserMapping();
+        ServiceMapping();
+        PhotoMapping();
+        OutfitMapping();
+        AlbumMapping();
     }
 }

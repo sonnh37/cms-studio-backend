@@ -1,18 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="File.TypeChecker" Version="4.1.1" />
-    <PackageReference Include="FluentValidation" Version="11.9.1" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="File.TypeChecker" Version="4.1.1"/>
+        <PackageReference Include="FluentValidation" Version="11.9.1"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\NM.Studio.Domain\NM.Studio.Domain.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\NM.Studio.Domain\NM.Studio.Domain.csproj"/>
+    </ItemGroup>
 
 </Project>

@@ -1,16 +1,13 @@
-﻿using NM.Studio.Domain.Contracts.Repositories.Outfits;
-using NM.Studio.Domain.Contracts.Repositories.Photos;
-using NM.Studio.Domain.Contracts.Repositories.Services;
-using NM.Studio.Domain.Contracts.Repositories.Users;
+﻿using NM.Studio.Domain.Contracts.Repositories;
 
-namespace NM.Studio.Domain.Contracts.UnitOfWorks
+namespace NM.Studio.Domain.Contracts.UnitOfWorks;
+
+public interface IUnitOfWork : IBaseUnitOfWork
 {
-    public interface IUnitOfWork : IBaseUnitOfWork
-    {
-        IUserRepository UserRepository { get; }
-        IPhotoRepository PhotoRepository { get; }
-        IServiceRepository ServiceRepository { get; }
+    IUserRepository UserRepository { get; }
+    IPhotoRepository PhotoRepository { get; }
+    IServiceRepository ServiceRepository { get; }
 
-        IOutfitRepository OutfitRepository { get; }
-    }
+    IOutfitRepository OutfitRepository { get; }
+    IAlbumRepository AlbumRepository { get; }
 }

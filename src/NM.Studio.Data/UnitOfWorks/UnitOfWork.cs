@@ -1,24 +1,22 @@
-﻿using NM.Studio.Domain.Contracts.Repositories.Photos;
-using NM.Studio.Domain.Contracts.Repositories.Services;
-using NM.Studio.Domain.Contracts.Repositories.Users;
+﻿using NM.Studio.Data.Context;
+using NM.Studio.Domain.Contracts.Repositories;
 using NM.Studio.Domain.Contracts.UnitOfWorks;
-using NM.Studio.Data.Context;
-using NM.Studio.Domain.Contracts.Repositories.Outfits;
 
-namespace NM.Studio.Data.UnitOfWorks
+namespace NM.Studio.Data.UnitOfWorks;
+
+public class UnitOfWork : BaseUnitOfWork<StudioContext>, IUnitOfWork
 {
-    public class UnitOfWork : BaseUnitOfWork<StudioContext>, IUnitOfWork
+    public UnitOfWork(StudioContext context, IServiceProvider serviceProvider) : base(context, serviceProvider)
     {
-        public UnitOfWork(StudioContext context, IServiceProvider serviceProvider) : base(context, serviceProvider)
-        {
-        }
-
-        public IUserRepository UserRepository => GetRepository<IUserRepository>();
-
-        public IPhotoRepository PhotoRepository => GetRepository<IPhotoRepository>();
-
-        public IServiceRepository ServiceRepository => GetRepository<IServiceRepository>();
-
-        public IOutfitRepository OutfitRepository => GetRepository<IOutfitRepository>();
     }
+
+    public IUserRepository UserRepository => GetRepository<IUserRepository>();
+
+    public IPhotoRepository PhotoRepository => GetRepository<IPhotoRepository>();
+
+    public IServiceRepository ServiceRepository => GetRepository<IServiceRepository>();
+
+    public IOutfitRepository OutfitRepository => GetRepository<IOutfitRepository>();
+
+    public IAlbumRepository AlbumRepository => GetRepository<IAlbumRepository>();
 }

@@ -1,34 +1,31 @@
-﻿using NM.Studio.Domain.CQRS.Queries.Common;
-using NM.Studio.Domain.CQRS.Queries.Outfits;
-using NM.Studio.Domain.Entities;
-using NM.Studio.Domain.Entities.Bases;
+﻿using NM.Studio.Domain.Entities.Bases;
 
-namespace NM.Studio.Domain.Contracts.Repositories.Bases
+namespace NM.Studio.Domain.Contracts.Repositories.Bases;
+
+public interface IBaseRepository
 {
-    public interface IBaseRepository
-    {
-    }
-    public interface IBaseRepository<TEntity> : IBaseRepository 
-        where TEntity : BaseEntity
-    {
-        Task<bool> Check(Guid id);
+}
 
-        IQueryable<TEntity> GetQueryable(CancellationToken cancellationToken = default);
+public interface IBaseRepository<TEntity> : IBaseRepository
+    where TEntity : BaseEntity
+{
+    Task<bool> Check(Guid id);
 
-        Task<long> GetTotaCount();
+    IQueryable<TEntity> GetQueryable(CancellationToken cancellationToken = default);
 
-        Task<IList<TEntity>> GetAll(CancellationToken cancellationToken = default);
+    Task<long> GetTotaCount();
 
-        Task<TEntity> GetById(Guid id);
+    Task<IList<TEntity>> GetAll(CancellationToken cancellationToken = default);
 
-        Task<IList<TEntity>> GetByIds(IList<Guid> ids);
+    Task<TEntity> GetById(Guid id);
 
-        void Add(TEntity entity);
-        void AddRange(IEnumerable<TEntity> entities);
-        void Update(TEntity entity);
-        void UpdateRange(IEnumerable<TEntity> entities);
-        void Delete(TEntity entity);
-        void DeleteRange(IEnumerable<TEntity> entities);
-        void CheckCancellationToken(CancellationToken cancellationToken = default);
-    }
+    Task<IList<TEntity>> GetByIds(IList<Guid> ids);
+
+    void Add(TEntity entity);
+    void AddRange(IEnumerable<TEntity> entities);
+    void Update(TEntity entity);
+    void UpdateRange(IEnumerable<TEntity> entities);
+    void Delete(TEntity entity);
+    void DeleteRange(IEnumerable<TEntity> entities);
+    void CheckCancellationToken(CancellationToken cancellationToken = default);
 }

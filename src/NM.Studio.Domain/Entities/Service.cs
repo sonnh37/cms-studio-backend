@@ -1,8 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using NM.Studio.Domain.Entities.Bases;
+﻿using NM.Studio.Domain.Entities.Bases;
 
 namespace NM.Studio.Domain.Entities;
-public partial class Service : BaseEntity
+
+public class Service : BaseEntity
 {
     public string? Tittle { get; set; }
 
@@ -11,5 +11,4 @@ public partial class Service : BaseEntity
     public string? Type { get; set; }
 
     public string? Url { get; set; }
-
 }

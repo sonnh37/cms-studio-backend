@@ -1,39 +1,38 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using NM.Studio.Domain.Configs.Mapping;
-using NM.Studio.Domain.Contracts.Repositories.Users;
-using NM.Studio.Domain.Contracts.Services.Users;
-using NM.Studio.Domain.Contracts.UnitOfWorks;
-using NM.Studio.Data.Context;
-using NM.Studio.Data.Repositories.Users;
-using NM.Studio.Data.UnitOfWorks;
+﻿using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
-using NM.Studio.Domain.Contracts.Repositories.Photos;
-using NM.Studio.Domain.Contracts.Repositories.Services;
-using NM.Studio.Domain.Contracts.Services.Services;
-using NM.Studio.Domain.Contracts.Services.Photos;
-using System.Reflection;
-using NM.Studio.Handler;
-using NM.Studio.Services;
+using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using NM.Studio.Data.Context;
+using NM.Studio.Data.Repositories;
+using NM.Studio.Data.Repositories.Outfits;
 using NM.Studio.Data.Repositories.Photos;
 using NM.Studio.Data.Repositories.Services;
-using NM.Studio.Domain.Contracts.Repositories.Outfits;
-using NM.Studio.Data.Repositories.Outfits;
-using NM.Studio.Domain.Contracts.Services.Outfits;
+using NM.Studio.Data.Repositories.Users;
+using NM.Studio.Data.UnitOfWorks;
+using NM.Studio.Domain.Configs.Mapping;
+using NM.Studio.Domain.Contracts.Repositories;
+using NM.Studio.Domain.Contracts.Services;
+using NM.Studio.Domain.Contracts.UnitOfWorks;
 using NM.Studio.Domain.Middleware;
-using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-using Microsoft.OpenApi.Models;
+using NM.Studio.Handler;
+using NM.Studio.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
 #region Add-DbContext
-builder.Services.AddDbContext<StudioContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddDbContext<StudioContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 #endregion
 
 builder.Services.AddControllers().AddJsonOptions(x =>
-                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+    x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -54,13 +53,13 @@ builder.Services.AddSwaggerGen(options =>
                 {
                     Type = ReferenceType.SecurityScheme,
                     Id = "Bearer"
-                },
+                }
             },
-            new string[]{}
+            new string[] { }
         }
     });
 });
-builder.Services.AddHttpContextAccessor(); 
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 #region Add-MediaR
@@ -74,31 +73,34 @@ builder.Services.AddMediatR(Assembly.GetExecutingAssembly(), handler);
 #endregion
 
 #region Add-Scoped
+
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IOutfitRepository, OutfitRepository>();
 builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
 builder.Services.AddScoped<IPhotoRepository, PhotoRepository>();
+builder.Services.AddScoped<IAlbumRepository, AlbumRepository>();
 
 #endregion
 
 #region Add-Transient
+
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IOutfitService, OutfitService>();
-
 builder.Services.AddTransient<IServiceService, ServiceService>();
-
 builder.Services.AddTransient<IPhotoService, PhotoService>();
+builder.Services.AddTransient<IAlbumService, AlbumService>();
 
 #endregion
 
 #region Config-Authentication_Authorization
+
 builder.Services.AddAuthentication(x =>
-{
-    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
+    {
+        x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
     .AddJwtBearer(options =>
     {
         options.SaveToken = true;
@@ -118,6 +120,7 @@ builder.Services.AddAuthentication(x =>
     });
 
 builder.Services.AddAuthorization();
+
 #endregion
 
 #region Add-Cors
