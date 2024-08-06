@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NM.Studio.API.Controllers.Base;
 using NM.Studio.Domain.CQRS.Commands.Outfits;
@@ -20,6 +19,7 @@ namespace NM.Studio.API.Controllers.Outfits
         {
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] OutfitGetAllQuery outfitGetAllQuery)
         {
@@ -28,7 +28,8 @@ namespace NM.Studio.API.Controllers.Outfits
             return Ok(messageResult);
         }
 
-        [HttpGet("{id}")]
+        [AllowAnonymous]
+        [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
             OutfitGetByIdQuery outfitGetByIdQuery = new OutfitGetByIdQuery();

@@ -49,6 +49,12 @@ namespace NM.Studio.Data.Migrations
                 oldClrType: typeof(Guid),
                 oldType: "uniqueidentifier");
 
+            migrationBuilder.AddColumn<Guid>(
+                name: "AlbumId",
+                table: "Photo",
+                type: "uniqueidentifier",
+                nullable: true);
+
             migrationBuilder.AddColumn<string>(
                 name: "Description",
                 table: "Photo",
@@ -80,13 +86,59 @@ namespace NM.Studio.Data.Migrations
                 name: "PK_Outfit",
                 table: "Outfit",
                 column: "Id");
+
+            migrationBuilder.CreateTable(
+                name: "Album",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWID()"),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Background = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastUpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Album", x => x.Id);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Photo_AlbumId",
+                table: "Photo",
+                column: "AlbumId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Photo_Album_AlbumId",
+                table: "Photo",
+                column: "AlbumId",
+                principalTable: "Album",
+                principalColumn: "Id");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_Photo_Album_AlbumId",
+                table: "Photo");
+
+            migrationBuilder.DropTable(
+                name: "Album");
+
+            migrationBuilder.DropIndex(
+                name: "IX_Photo_AlbumId",
+                table: "Photo");
+
             migrationBuilder.DropPrimaryKey(
                 name: "PK_Outfit",
                 table: "Outfit");
+
+            migrationBuilder.DropColumn(
+                name: "AlbumId",
+                table: "Photo");
 
             migrationBuilder.DropColumn(
                 name: "Description",

@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace NM.Studio.API.Controllers.Base
 {
     [ApiController]
-    [Route("api/[Controller]")]
     public class BaseController : ControllerBase
     {
         protected readonly IMediator _mediator;

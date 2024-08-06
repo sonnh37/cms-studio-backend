@@ -20,6 +20,7 @@ namespace NM.Studio.API.Controllers.Users
         {
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] UserGetAllQuery userGetAllQuery)
         {
@@ -28,7 +29,8 @@ namespace NM.Studio.API.Controllers.Users
             return Ok(messageResult);
         }
 
-        [HttpGet("{id}")]
+        [AllowAnonymous]        
+        [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
             UserGetByIdQuery userGetByIdQuery = new UserGetByIdQuery();

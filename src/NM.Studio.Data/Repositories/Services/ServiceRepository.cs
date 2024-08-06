@@ -17,25 +17,17 @@ namespace NM.Studio.Data.Repositories.Services
 
         public async Task<IList<Service>> GetAllWithInclude(ServiceGetAllQuery query, CancellationToken cancellationToken = default)
         {
-
             var queryable = GetQueryable();
-
-            // Apply base filtering: not deleted
             queryable = queryable.Where(entity => !entity.IsDeleted);
 
-            // Additional filtering based on ServiceIds (exclude these IDs if given)
             if (query.ServiceIds != null && query.ServiceIds.Count > 0)
             {
                 queryable = queryable.Where(entity => !query.ServiceIds.Contains(entity.Id));
             }
 
-            // Include related EventXServices
-
-            // Execute the query asynchronously
             var results = await queryable.ToListAsync(cancellationToken);
 
             return results;
-
         }
     }
 }

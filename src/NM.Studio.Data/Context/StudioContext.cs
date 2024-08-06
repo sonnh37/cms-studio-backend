@@ -50,6 +50,15 @@ namespace NM.Studio.Data.Context
 
                 entity.Property(e => e.Price).HasColumnType("decimal(18, 2)");
             });
+            
+            modelBuilder.Entity<Album>(entity =>
+            {
+                entity.ToTable("Album");
+
+                entity.Property(e => e.Id)
+                    .ValueGeneratedOnAdd()
+                    .HasDefaultValueSql("NEWID()");
+            });
 
             modelBuilder.Entity<Photo>(entity =>
             {
@@ -58,7 +67,13 @@ namespace NM.Studio.Data.Context
                 entity.Property(e => e.Id)
                     .ValueGeneratedOnAdd()
                     .HasDefaultValueSql("NEWID()");
+
+                entity.HasOne(photo => photo.Album)
+                    .WithMany(album => album.Photos)
+                    .HasForeignKey(photo => photo.AlbumId);
             });
+
+            
 
             modelBuilder.Entity<Service>(entity =>
             {

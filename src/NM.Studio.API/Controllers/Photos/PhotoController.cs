@@ -20,6 +20,7 @@ namespace NM.Studio.API.Controllers.Photos
         {
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] PhotoGetAllQuery photoGetAllQuery)
         {
@@ -28,7 +29,8 @@ namespace NM.Studio.API.Controllers.Photos
             return Ok(messageResult);
         }
 
-        [HttpGet("{id}")]
+        [AllowAnonymous]
+        [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
             PhotoGetByIdQuery photoGetByIdQuery = new PhotoGetByIdQuery();

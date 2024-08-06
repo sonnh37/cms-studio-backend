@@ -22,6 +22,42 @@ namespace NM.Studio.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+            modelBuilder.Entity("NM.Studio.Domain.Entities.Album", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<string>("Background")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LastUpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("LastUpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Album", (string)null);
+                });
+
             modelBuilder.Entity("NM.Studio.Domain.Entities.Outfit", b =>
                 {
                     b.Property<Guid>("Id")
@@ -74,6 +110,9 @@ namespace NM.Studio.Data.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasDefaultValueSql("NEWID()");
 
+                    b.Property<Guid?>("AlbumId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -105,6 +144,8 @@ namespace NM.Studio.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AlbumId");
 
                     b.ToTable("Photo", (string)null);
                 });
@@ -209,6 +250,20 @@ namespace NM.Studio.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("User", (string)null);
+                });
+
+            modelBuilder.Entity("NM.Studio.Domain.Entities.Photo", b =>
+                {
+                    b.HasOne("NM.Studio.Domain.Entities.Album", "Album")
+                        .WithMany("Photos")
+                        .HasForeignKey("AlbumId");
+
+                    b.Navigation("Album");
+                });
+
+            modelBuilder.Entity("NM.Studio.Domain.Entities.Album", b =>
+                {
+                    b.Navigation("Photos");
                 });
 #pragma warning restore 612, 618
         }

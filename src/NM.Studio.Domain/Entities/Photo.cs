@@ -14,5 +14,9 @@ public partial class Photo : BaseEntity
     public string? Src { get; set; }
     
     public string? Href { get; set; }
+    
+    public Guid? AlbumId { get; set; }
+
+    public virtual Album? Album { get; set; } 
 
 }
