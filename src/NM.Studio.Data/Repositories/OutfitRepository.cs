@@ -6,7 +6,7 @@ using NM.Studio.Domain.Contracts.Repositories;
 using NM.Studio.Domain.CQRS.Queries.Outfits;
 using NM.Studio.Domain.Entities;
 
-namespace NM.Studio.Data.Repositories.Outfits;
+namespace NM.Studio.Data.Repositories;
 
 public class OutfitRepository : BaseRepository<Outfit>, IOutfitRepository
 {
@@ -19,18 +19,14 @@ public class OutfitRepository : BaseRepository<Outfit>, IOutfitRepository
     {
         var queryable = GetQueryable();
 
-        // Apply base filtering: not deleted
+        if (queryable.Any())
+            if (!string.IsNullOrEmpty(query.Type))
+                queryable = queryable.Where(m => m.Type.ToLower() == query.Type.ToLower());
+
         queryable = queryable.Where(entity => !entity.IsDeleted);
 
-        //// Additional filtering based on OutfitIds (exclude these IDs if given)
-        //if (query.OutfitIds != null && query.OutfitIds.Count > 0)
-        //{
-        //    queryable = queryable.Where(entity => !query.OutfitIds.Contains(entity.Id));
-        //}
+        if (queryable.Any()) queryable = queryable.Include(m => m.Photos);
 
-        // Include related EventXOutfits
-
-        // Execute the query asynchronously
         var results = await queryable.ToListAsync(cancellationToken);
 
         return results;

@@ -6,7 +6,7 @@ using NM.Studio.Domain.Contracts.Repositories;
 using NM.Studio.Domain.CQRS.Queries.Photos;
 using NM.Studio.Domain.Entities;
 
-namespace NM.Studio.Data.Repositories.Photos;
+namespace NM.Studio.Data.Repositories;
 
 public class PhotoRepository : BaseRepository<Photo>, IPhotoRepository
 {

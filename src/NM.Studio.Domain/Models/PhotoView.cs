@@ -15,4 +15,6 @@ public class PhotoView : BaseView
     public string? Href { get; set; }
 
     public Guid? AlbumId { get; set; }
+    
+    public Guid? OutfitId { get; set; }
 }

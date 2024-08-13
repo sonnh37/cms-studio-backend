@@ -11,5 +11,5 @@ public class AlbumResult : BaseResult
 
     public string? Background { get; set; }
 
-    public List<Album> Albums { get; set; } = new();
+    public List<PhotoResult> Photos { get; set; } = new List<PhotoResult>();
 }

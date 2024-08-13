@@ -16,6 +16,10 @@ public class PhotoResult : BaseResult
     public string? Href { get; set; }
 
     public Guid? AlbumId { get; set; }
+    
+    public Guid? OutfitId { get; set; }
 
-    public Album? Album { get; set; }
+    public AlbumResult? Album { get; set; }
+    
+    public OutfitResult? Outfit { get; set; }
 }

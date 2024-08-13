@@ -6,7 +6,7 @@ using NM.Studio.Domain.Contracts.Repositories;
 using NM.Studio.Domain.CQRS.Queries.Users;
 using NM.Studio.Domain.Entities;
 
-namespace NM.Studio.Data.Repositories.Users;
+namespace NM.Studio.Data.Repositories;
 
 public class UserRepository : BaseRepository<User>, IUserRepository
 {

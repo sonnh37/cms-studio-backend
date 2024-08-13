@@ -17,4 +17,10 @@ public class Photo : BaseEntity
     public Guid? AlbumId { get; set; }
 
     public virtual Album? Album { get; set; }
+    
+    
+    public Guid? OutfitId { get; set; }
+    
+
+    public virtual Outfit? Outfit { get; set; }
 }

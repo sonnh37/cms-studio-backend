@@ -15,4 +15,6 @@ public class OutfitResult : BaseResult
     public string? Color { get; set; }
 
     public string? Description { get; set; }
+    
+    public List<PhotoResult> Photos { get; set; } = new List<PhotoResult>();
 }

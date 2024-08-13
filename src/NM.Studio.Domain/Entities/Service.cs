@@ -4,7 +4,7 @@ namespace NM.Studio.Domain.Entities;
 
 public class Service : BaseEntity
 {
-    public string? Tittle { get; set; }
+    public string? Title { get; set; }
 
     public string? Description { get; set; }
 

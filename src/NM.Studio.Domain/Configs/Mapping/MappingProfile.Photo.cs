@@ -8,6 +8,7 @@ namespace NM.Studio.Domain.Configs.Mapping;
 
 public partial class MappingProfile : Profile
 {
+    
     private void PhotoMapping()
     {
         CreateMap<Photo, PhotoResult>().ReverseMap();

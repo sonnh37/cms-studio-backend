@@ -36,6 +36,7 @@ public class OutfitController : BaseController
 
         return Ok(messageResult);
     }
+    
 
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] OutfitCreateCommand outfitCreateCommand)

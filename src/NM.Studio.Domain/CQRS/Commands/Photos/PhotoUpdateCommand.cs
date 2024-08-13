@@ -14,4 +14,8 @@ public class PhotoUpdateCommand : UpdateCommand<PhotoView>
     public string? Src { get; set; }
 
     public string? Href { get; set; }
+    
+    public Guid? AlbumId { get; set; }
+    
+    public Guid? OutfitId { get; set; }
 }

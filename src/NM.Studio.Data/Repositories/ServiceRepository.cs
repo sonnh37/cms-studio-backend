@@ -6,7 +6,7 @@ using NM.Studio.Domain.Contracts.Repositories;
 using NM.Studio.Domain.CQRS.Queries.Services;
 using NM.Studio.Domain.Entities;
 
-namespace NM.Studio.Data.Repositories.Services;
+namespace NM.Studio.Data.Repositories;
 
 public class ServiceRepository : BaseRepository<Service>, IServiceRepository
 {

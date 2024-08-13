@@ -64,6 +64,10 @@ public partial class StudioContext : BaseDbContext
             entity.HasOne(photo => photo.Album)
                 .WithMany(album => album.Photos)
                 .HasForeignKey(photo => photo.AlbumId);
+            
+            entity.HasOne(photo => photo.Outfit)
+                .WithMany(album => album.Photos)
+                .HasForeignKey(photo => photo.OutfitId);
         });
 
 
