@@ -131,8 +131,8 @@ public abstract class BaseService<TEntity> : BaseService, IBaseService
         if (user != null)
         {
             entity.LastUpdatedBy = user.Email;
-            entity.LastUpdatedDate = DateTime.Now;
         }
+        entity.LastUpdatedDate = DateTime.Now;
 
         return entity;
     }

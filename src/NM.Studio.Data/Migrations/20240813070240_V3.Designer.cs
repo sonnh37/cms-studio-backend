@@ -12,7 +12,7 @@ using NM.Studio.Data.Context;
 namespace NM.Studio.Data.Migrations
 {
     [DbContext(typeof(StudioContext))]
-    [Migration("20240813062723_V3")]
+    [Migration("20240813070240_V3")]
     partial class V3
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -182,13 +182,13 @@ namespace NM.Studio.Data.Migrations
                     b.Property<DateTime?>("LastUpdatedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Src")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Type")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Url")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");

@@ -18,7 +18,7 @@ public class AlbumRepository : BaseRepository<Album>, IAlbumRepository
         CancellationToken cancellationToken = default)
     {
         var queryable = GetQueryable();
-        queryable = queryable.Where(entity => !entity.IsDeleted);
+        //queryable = queryable.Where(entity => !entity.IsDeleted);
         if (queryable.Any()) queryable = queryable.Include(m => m.Photos);
 
         var results = await queryable.ToListAsync(cancellationToken);

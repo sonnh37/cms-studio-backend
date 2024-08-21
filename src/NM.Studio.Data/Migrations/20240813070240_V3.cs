@@ -10,9 +10,14 @@ namespace NM.Studio.Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.RenameColumn(
-                name: "Tittle",
+                name: "Url",
                 table: "Service",
                 newName: "Title");
+
+            migrationBuilder.RenameColumn(
+                name: "Tittle",
+                table: "Service",
+                newName: "Src");
 
             migrationBuilder.AddColumn<Guid>(
                 name: "OutfitId",
@@ -49,6 +54,11 @@ namespace NM.Studio.Data.Migrations
 
             migrationBuilder.RenameColumn(
                 name: "Title",
+                table: "Service",
+                newName: "Url");
+
+            migrationBuilder.RenameColumn(
+                name: "Src",
                 table: "Service",
                 newName: "Tittle");
         }
