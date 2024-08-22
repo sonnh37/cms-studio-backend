@@ -15,5 +15,6 @@ public partial class MappingProfile : Profile
         CreateMap<Photo, PhotoCreateCommand>().ReverseMap();
         CreateMap<Photo, PhotoView>().ReverseMap();
         CreateMap<Photo, PhotoUpdateCommand>().ReverseMap();
+        CreateMap<PhotoResult, PhotoUpdateCommand>().ReverseMap();
     }
 }

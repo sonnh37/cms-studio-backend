@@ -8,4 +8,5 @@ namespace NM.Studio.Domain.Contracts.Services;
 public interface IAlbumService : IBaseService
 {
     Task<MessageResults<AlbumResult>> GetAll(AlbumGetAllQuery x, CancellationToken cancellationToken = default);
+    Task<MessageResult<AlbumResult>> GetById(AlbumGetByIdQuery x, CancellationToken cancellationToken = default);
 }

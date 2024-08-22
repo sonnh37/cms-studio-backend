@@ -20,7 +20,12 @@ public class PhotoRepository : BaseRepository<Photo>, IPhotoRepository
         var queryable = GetQueryable();
 
         // Apply base filtering: not deleted
-        queryable = queryable.Where(entity => !entity.IsDeleted);
+        //queryable = queryable.Where(entity => !entity.IsDeleted);
+
+        if (!string.IsNullOrEmpty(query.Type))
+        {
+            queryable = queryable.Where(entity => entity.Type == query.Type);
+        }
 
         // Additional filtering based on PhotoIds (exclude these IDs if given)
 

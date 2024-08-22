@@ -7,4 +7,5 @@ namespace NM.Studio.Domain.Contracts.Repositories;
 public interface IAlbumRepository : IBaseRepository
 {
     Task<IList<Album>> GetAllWithInclude(AlbumGetAllQuery x, CancellationToken cancellationToken = default);
+    Task<Album> GetByIdWithInclude(AlbumGetByIdQuery query, CancellationToken cancellationToken = default);
 }

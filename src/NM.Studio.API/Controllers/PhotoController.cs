@@ -44,6 +44,8 @@ public class PhotoController : BaseController
 
         return Ok(messageView);
     }
+    
+    
 
     [HttpPut]
     public async Task<IActionResult> Update([FromBody] PhotoUpdateCommand photoUpdateCommand)

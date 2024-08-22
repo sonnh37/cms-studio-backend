@@ -32,4 +32,15 @@ public class AlbumService : BaseService<Album>, IAlbumService
 
         return msgResults;
     }
+    
+    public async Task<MessageResult<AlbumResult>> GetById(AlbumGetByIdQuery x,
+        CancellationToken cancellationToken = default)
+    {
+        var album = await _albumRepository.GetByIdWithInclude(x, cancellationToken);
+        // map 
+        var content = _mapper.Map<Album, AlbumResult>(album);
+        var msgResult = AppMessage.GetMessageResult(content);
+
+        return msgResult;
+    }
 }

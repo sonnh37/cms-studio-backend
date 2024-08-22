@@ -26,6 +26,6 @@ public class AlbumQueryHandler : BaseQueryHandler<AlbumView>,
 
     public async Task<MessageResult<AlbumResult>> Handle(AlbumGetByIdQuery request, CancellationToken cancellationToken)
     {
-        return await _albumService.GetById<AlbumResult>(request.Id);
+        return await _albumService.GetById(request, cancellationToken);
     }
 }

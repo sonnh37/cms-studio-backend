@@ -25,4 +25,16 @@ public class AlbumRepository : BaseRepository<Album>, IAlbumRepository
 
         return results;
     }
+    
+    public async Task<Album> GetByIdWithInclude(AlbumGetByIdQuery query,
+        CancellationToken cancellationToken = default)
+    {
+        var queryable = GetQueryable();
+        if (queryable.Any()) queryable = queryable.Include(m => m.Photos);
+        if (queryable.Any()) queryable = queryable.Where(m => m.Id == query.Id);
+
+        var result = await queryable.SingleAsync(cancellationToken);
+
+        return result;
+    }
 }

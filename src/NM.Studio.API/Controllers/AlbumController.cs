@@ -1,9 +1,12 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NM.Studio.API.Controllers.Base;
 using NM.Studio.Domain.CQRS.Commands.Albums;
+using NM.Studio.Domain.CQRS.Commands.Photos;
 using NM.Studio.Domain.CQRS.Queries.Albums;
+using NM.Studio.Domain.CQRS.Queries.Photos;
 
 namespace NM.Studio.API.Controllers;
 
@@ -11,9 +14,12 @@ namespace NM.Studio.API.Controllers;
 [Route("album-management/albums")]
 public class AlbumController : BaseController
 {
-    public AlbumController(IMediator mediator) : base(mediator)
+    public AlbumController(IMediator mediator, IMapper mapper) : base(mediator)
     {
+        _mapper = mapper;
     }
+    
+    protected readonly IMapper _mapper;
 
     [AllowAnonymous]
     [HttpGet]
@@ -44,6 +50,36 @@ public class AlbumController : BaseController
 
         return Ok(messageView);
     }
+    
+    [HttpPost("{id:guid}/photos")]
+    public async Task<IActionResult> CreatePhoto(Guid id, [FromBody] PhotoUpdateCommand photoUpdateCommand)
+    {
+        photoUpdateCommand.Type = "ALBUM";
+        photoUpdateCommand.AlbumId = id;
+        var messageView = await _mediator.Send(photoUpdateCommand);
+
+        return Ok(messageView);
+    }
+    
+    [HttpDelete("{id:guid}/photos")]
+    public async Task<IActionResult> DeletePhoto(Guid id, [FromQuery] Guid photoId)
+    {
+        var photoGetByIdQuery = new PhotoGetByIdQuery
+        {
+            Id = photoId
+        };
+        var messageResult = await _mediator.Send(photoGetByIdQuery);
+
+        var photoResult = messageResult.Result;
+        photoResult.AlbumId = null;
+        photoResult.Type = "NONE";
+
+        var photoUpdateCommand = _mapper.Map<PhotoUpdateCommand>(photoResult);
+        var messageView = await _mediator.Send(photoUpdateCommand);
+
+        return Ok(messageView);
+    }
+
 
     [HttpPut]
     public async Task<IActionResult> Update([FromBody] AlbumUpdateCommand albumUpdateCommand)
