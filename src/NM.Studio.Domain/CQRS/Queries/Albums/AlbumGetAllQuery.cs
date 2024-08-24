@@ -5,4 +5,5 @@ namespace NM.Studio.Domain.CQRS.Queries.Albums;
 
 public class AlbumGetAllQuery : GetAllQuery<AlbumResult>
 {
+    public string? Title { get; set; }
 }
