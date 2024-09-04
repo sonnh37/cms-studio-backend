@@ -8,13 +8,9 @@ public class PhotoCreateCommand : CreateCommand
 
     public string? Description { get; set; }
 
-    public string? Type { get; set; }
-
     public string? Src { get; set; }
 
     public string? Href { get; set; }
 
-    public Guid? AlbumId { get; set; }
-
-    public Guid? OutfitId { get; set; }
+    public string? Tag { get; set; }
 }

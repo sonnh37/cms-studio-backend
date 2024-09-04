@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace CMS.Studio.API.Controllers;
 
 //[Authorize]
-[Route("service-management/services")]
+[Route("services")]
 public class ServiceController : BaseController
 {
     public ServiceController(IMediator mediator) : base(mediator)

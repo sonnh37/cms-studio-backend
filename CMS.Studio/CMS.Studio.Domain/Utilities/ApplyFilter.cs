@@ -56,9 +56,6 @@ public static class ApplyFilter
 
         if (!string.IsNullOrEmpty(query.Address)) queryable = queryable.Where(e => e.Address.Contains(query.Address));
 
-        if (!string.IsNullOrEmpty(query.Status)) queryable = queryable.Where(e => e.Status == query.Status);
-
-        if (!string.IsNullOrEmpty(query.Gender)) queryable = queryable.Where(e => e.Gender == query.Gender);
 
         if (!string.IsNullOrEmpty(query.Role.ToString())) queryable = queryable.Where(e => e.Role == query.Role);
 

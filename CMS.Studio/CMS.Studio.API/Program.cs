@@ -1,7 +1,7 @@
-﻿using System.Reflection;
-using System.Text;
+﻿using System.Text;
 using System.Text.Json.Serialization;
 using CMS.Studio.API.Registrations;
+using CMS.Studio.Data;
 using CMS.Studio.Data.Context;
 using CMS.Studio.Domain.Configs.Mapping;
 using CMS.Studio.Domain.Middleware;
@@ -11,8 +11,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using MediatR;
-using Microsoft.Extensions.Logging;
 var builder = WebApplication.CreateBuilder(args);
 
 #region Add-DbContext
@@ -127,6 +125,13 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseMiddleware<TokenUserMiddleware>();
+
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<StudioContext>();
+    DummyData.SeedDatabase(context);
+}
+
 app.UseRouting();
 
 app.UseHttpsRedirection();

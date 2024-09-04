@@ -14,7 +14,7 @@ public class PaginationQuery : BaseQuery
     public int PageNumber { get; set; } = 1;
     public int PageSize { get; set; } = 10;
     public string? SortField { get; set; }
-    public SortOrder? SortOrder { get; set; } // Consider using enum
+    public SortOrder? SortOrder { get; set; } 
 }
 
 public class CommonQueryableQuery : PaginationQuery

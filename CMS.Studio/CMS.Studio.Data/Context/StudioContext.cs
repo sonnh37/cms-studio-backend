@@ -14,7 +14,6 @@ public partial class StudioContext : BaseDbContext
     public virtual DbSet<Outfit> Outfits { get; set; } = null!;
     public virtual DbSet<Photo> Photos { get; set; } = null!;
     public virtual DbSet<OutfitXPhoto> OutfitXPhotos { get; set; } = null!;
-    public virtual DbSet<ServiceXPhoto> ServiceXPhotos { get; set; } = null!;
     public virtual DbSet<AlbumXPhoto> AlbumXPhotos { get; set; } = null!;
     public virtual DbSet<Service> Services { get; set; } = null!;
     public virtual DbSet<User> Users { get; set; } = null!;
@@ -79,14 +78,48 @@ public partial class StudioContext : BaseDbContext
                 .HasForeignKey(photo => photo.AlbumId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            entity.HasMany(m => m.AlbumsXPhotos)
+            entity.HasMany(m => m.OutfitXPhotos)
                 .WithOne(m => m.Photo)
+                .HasForeignKey(photo => photo.OutfitId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+        
+        
+        modelBuilder.Entity<AlbumXPhoto>(entity =>
+        {
+            entity.ToTable("AlbumXPhoto");
+
+            entity.Property(e => e.Id)
+                .ValueGeneratedOnAdd()
+                .HasDefaultValueSql("NEWID()");
+
+            entity.HasOne(m => m.Album)
+                .WithMany(m => m.AlbumXPhotos)
                 .HasForeignKey(photo => photo.AlbumId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            entity.HasMany(m => m.AlbumsXPhotos)
-                .WithOne(m => m.Photo)
-                .HasForeignKey(photo => photo.AlbumId)
+            entity.HasOne(m => m.Photo)
+                .WithMany(m => m.AlbumsXPhotos)
+                .HasForeignKey(photo => photo.PhotoId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+        
+        modelBuilder.Entity<OutfitXPhoto>(entity =>
+        {
+            entity.ToTable("OutfitXPhoto");
+
+            entity.Property(e => e.Id)
+                .ValueGeneratedOnAdd()
+                .HasDefaultValueSql("NEWID()");
+
+            entity.HasOne(m => m.Outfit)
+                .WithMany(m => m.OutfitXPhotos)
+                .HasForeignKey(photo => photo.OutfitId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(m => m.Photo)
+                .WithMany(m => m.OutfitXPhotos)
+                .HasForeignKey(photo => photo.PhotoId)
                 .OnDelete(DeleteBehavior.Restrict);
         });
 
@@ -99,10 +132,6 @@ public partial class StudioContext : BaseDbContext
                 .ValueGeneratedOnAdd()
                 .HasDefaultValueSql("NEWID()");
 
-            entity.HasMany(m => m.ServiceXPhotos)
-                .WithOne(m => m.Service)
-                .HasForeignKey(m => m.ServiceId)
-                .OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<User>(entity =>

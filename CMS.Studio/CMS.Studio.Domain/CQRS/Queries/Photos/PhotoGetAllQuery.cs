@@ -5,7 +5,13 @@ namespace CMS.Studio.Domain.CQRS.Queries.Photos;
 
 public class PhotoGetAllQuery : GetAllQuery<PhotoResult>
 {
-    public string? Type { get; set; }
-    public Guid? AlbumId { get; set; }
-    public Guid? OutfitId { get; set; }
+    public string? Title { get; set; }
+
+    public string? Description { get; set; }
+
+    public string? Src { get; set; }
+
+    public string? Href { get; set; }
+
+    public string? Tag { get; set; }
 }

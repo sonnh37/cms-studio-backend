@@ -8,6 +8,8 @@ public class User : BaseEntity
     public string? FirstName { get; set; }
 
     public string? LastName { get; set; }
+    
+    public string? ImageUrl { get; set; }
 
     public string? Email { get; set; }
 
@@ -15,7 +17,7 @@ public class User : BaseEntity
 
     public string? Address { get; set; }
 
-    public string? Gender { get; set; }
+    public Gender? Gender { get; set; }
 
     public string? Phone { get; set; }
 
@@ -27,5 +29,5 @@ public class User : BaseEntity
 
     public string? Avatar { get; set; }
 
-    public string? Status { get; set; }
+    public UserStatus? Status { get; set; }
 }

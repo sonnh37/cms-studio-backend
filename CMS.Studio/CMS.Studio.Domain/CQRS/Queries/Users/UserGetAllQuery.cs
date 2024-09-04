@@ -9,6 +9,8 @@ public class UserGetAllQuery : GetAllQuery<UserResult>
     public string? FirstName { get; set; }
 
     public string? LastName { get; set; }
+    
+    public string? ImageUrl { get; set; }
 
     public string? Email { get; set; }
 
@@ -16,7 +18,7 @@ public class UserGetAllQuery : GetAllQuery<UserResult>
 
     public string? Address { get; set; }
 
-    public string? Gender { get; set; }
+    public Gender? Gender { get; set; }
 
     public string? Phone { get; set; }
 
@@ -28,5 +30,5 @@ public class UserGetAllQuery : GetAllQuery<UserResult>
 
     public string? Avatar { get; set; }
 
-    public string? Status { get; set; }
+    public UserStatus? Status { get; set; }
 }

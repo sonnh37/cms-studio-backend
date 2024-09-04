@@ -9,22 +9,23 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace NM.Studio.Data.Migrations
+namespace CMS.Studio.Data.Migrations
 {
     [DbContext(typeof(StudioContext))]
-    [Migration("20240904084319_Initial")]
+    [Migration("20240904150141_Initial")]
     partial class Initial
     {
+        /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.0")
+                .HasAnnotation("ProductVersion", "8.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("NM.Studio.Domain.Entities.Album", b =>
+            modelBuilder.Entity("CMS.Studio.Domain.Entities.Album", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -60,11 +61,12 @@ namespace NM.Studio.Data.Migrations
                     b.ToTable("Album", (string)null);
                 });
 
-            modelBuilder.Entity("NM.Studio.Domain.Entities.AlbumXPhoto", b =>
+            modelBuilder.Entity("CMS.Studio.Domain.Entities.AlbumXPhoto", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
 
                     b.Property<Guid?>("AlbumId")
                         .HasColumnType("uniqueidentifier");
@@ -91,10 +93,12 @@ namespace NM.Studio.Data.Migrations
 
                     b.HasIndex("AlbumId");
 
-                    b.ToTable("AlbumXPhotos");
+                    b.HasIndex("PhotoId");
+
+                    b.ToTable("AlbumXPhoto", (string)null);
                 });
 
-            modelBuilder.Entity("NM.Studio.Domain.Entities.Outfit", b =>
+            modelBuilder.Entity("CMS.Studio.Domain.Entities.Outfit", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -126,7 +130,7 @@ namespace NM.Studio.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal?>("Price")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(18, 2)");
 
                     b.Property<string>("Size")
                         .HasColumnType("nvarchar(max)");
@@ -139,11 +143,12 @@ namespace NM.Studio.Data.Migrations
                     b.ToTable("Outfit", (string)null);
                 });
 
-            modelBuilder.Entity("NM.Studio.Domain.Entities.OutfitXPhoto", b =>
+            modelBuilder.Entity("CMS.Studio.Domain.Entities.OutfitXPhoto", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
@@ -172,10 +177,10 @@ namespace NM.Studio.Data.Migrations
 
                     b.HasIndex("PhotoId");
 
-                    b.ToTable("OutfitXPhotos");
+                    b.ToTable("OutfitXPhoto", (string)null);
                 });
 
-            modelBuilder.Entity("NM.Studio.Domain.Entities.Photo", b =>
+            modelBuilder.Entity("CMS.Studio.Domain.Entities.Photo", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -212,15 +217,12 @@ namespace NM.Studio.Data.Migrations
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Type")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.ToTable("Photo", (string)null);
                 });
 
-            modelBuilder.Entity("NM.Studio.Domain.Entities.Service", b =>
+            modelBuilder.Entity("CMS.Studio.Domain.Entities.Service", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -259,43 +261,7 @@ namespace NM.Studio.Data.Migrations
                     b.ToTable("Service", (string)null);
                 });
 
-            modelBuilder.Entity("NM.Studio.Domain.Entities.ServiceXPhoto", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("LastUpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("LastUpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("PhotoId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("ServiceId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PhotoId");
-
-                    b.HasIndex("ServiceId");
-
-                    b.ToTable("ServiceXPhotos");
-                });
-
-            modelBuilder.Entity("NM.Studio.Domain.Entities.User", b =>
+            modelBuilder.Entity("CMS.Studio.Domain.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -323,7 +289,10 @@ namespace NM.Studio.Data.Migrations
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Gender")
+                    b.Property<int?>("Gender")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
@@ -347,8 +316,8 @@ namespace NM.Studio.Data.Migrations
                     b.Property<int?>("Role")
                         .HasColumnType("int");
 
-                    b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("Status")
+                        .HasColumnType("int");
 
                     b.Property<string>("Username")
                         .HasColumnType("nvarchar(max)");
@@ -358,16 +327,16 @@ namespace NM.Studio.Data.Migrations
                     b.ToTable("User", (string)null);
                 });
 
-            modelBuilder.Entity("NM.Studio.Domain.Entities.AlbumXPhoto", b =>
+            modelBuilder.Entity("CMS.Studio.Domain.Entities.AlbumXPhoto", b =>
                 {
-                    b.HasOne("NM.Studio.Domain.Entities.Album", "Album")
+                    b.HasOne("CMS.Studio.Domain.Entities.Album", "Album")
                         .WithMany("AlbumXPhotos")
                         .HasForeignKey("AlbumId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("NM.Studio.Domain.Entities.Photo", "Photo")
+                    b.HasOne("CMS.Studio.Domain.Entities.Photo", "Photo")
                         .WithMany("AlbumsXPhotos")
-                        .HasForeignKey("AlbumId")
+                        .HasForeignKey("PhotoId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Album");
@@ -375,60 +344,38 @@ namespace NM.Studio.Data.Migrations
                     b.Navigation("Photo");
                 });
 
-            modelBuilder.Entity("NM.Studio.Domain.Entities.OutfitXPhoto", b =>
+            modelBuilder.Entity("CMS.Studio.Domain.Entities.OutfitXPhoto", b =>
                 {
-                    b.HasOne("NM.Studio.Domain.Entities.Outfit", "Outfit")
+                    b.HasOne("CMS.Studio.Domain.Entities.Outfit", "Outfit")
                         .WithMany("OutfitXPhotos")
                         .HasForeignKey("OutfitId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("NM.Studio.Domain.Entities.Photo", "Photo")
+                    b.HasOne("CMS.Studio.Domain.Entities.Photo", "Photo")
                         .WithMany("OutfitXPhotos")
-                        .HasForeignKey("PhotoId");
+                        .HasForeignKey("PhotoId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Outfit");
 
                     b.Navigation("Photo");
                 });
 
-            modelBuilder.Entity("NM.Studio.Domain.Entities.ServiceXPhoto", b =>
-                {
-                    b.HasOne("NM.Studio.Domain.Entities.Photo", "Photo")
-                        .WithMany("ServiceXPhotos")
-                        .HasForeignKey("PhotoId");
-
-                    b.HasOne("NM.Studio.Domain.Entities.Service", "Service")
-                        .WithMany("ServiceXPhotos")
-                        .HasForeignKey("ServiceId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.Navigation("Photo");
-
-                    b.Navigation("Service");
-                });
-
-            modelBuilder.Entity("NM.Studio.Domain.Entities.Album", b =>
+            modelBuilder.Entity("CMS.Studio.Domain.Entities.Album", b =>
                 {
                     b.Navigation("AlbumXPhotos");
                 });
 
-            modelBuilder.Entity("NM.Studio.Domain.Entities.Outfit", b =>
+            modelBuilder.Entity("CMS.Studio.Domain.Entities.Outfit", b =>
                 {
                     b.Navigation("OutfitXPhotos");
                 });
 
-            modelBuilder.Entity("NM.Studio.Domain.Entities.Photo", b =>
+            modelBuilder.Entity("CMS.Studio.Domain.Entities.Photo", b =>
                 {
                     b.Navigation("AlbumsXPhotos");
 
                     b.Navigation("OutfitXPhotos");
-
-                    b.Navigation("ServiceXPhotos");
-                });
-
-            modelBuilder.Entity("NM.Studio.Domain.Entities.Service", b =>
-                {
-                    b.Navigation("ServiceXPhotos");
                 });
 #pragma warning restore 612, 618
         }

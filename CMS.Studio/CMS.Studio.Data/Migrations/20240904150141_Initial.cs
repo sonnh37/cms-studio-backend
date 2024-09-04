@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace NM.Studio.Data.Migrations
+namespace CMS.Studio.Data.Migrations
 {
+    /// <inheritdoc />
     public partial class Initial : Migration
     {
+        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
@@ -57,7 +59,6 @@ namespace NM.Studio.Data.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWID()"),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Type = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Src = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Href = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Tag = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -99,16 +100,17 @@ namespace NM.Studio.Data.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWID()"),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Dob = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Gender = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Gender = table.Column<int>(type: "int", nullable: true),
                     Phone = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Username = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Role = table.Column<int>(type: "int", nullable: true),
                     Avatar = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -121,10 +123,10 @@ namespace NM.Studio.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AlbumXPhotos",
+                name: "AlbumXPhoto",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWID()"),
                     AlbumId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     PhotoId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -135,26 +137,26 @@ namespace NM.Studio.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AlbumXPhotos", x => x.Id);
+                    table.PrimaryKey("PK_AlbumXPhoto", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AlbumXPhotos_Album_AlbumId",
+                        name: "FK_AlbumXPhoto_Album_AlbumId",
                         column: x => x.AlbumId,
                         principalTable: "Album",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_AlbumXPhotos_Photo_AlbumId",
-                        column: x => x.AlbumId,
+                        name: "FK_AlbumXPhoto_Photo_PhotoId",
+                        column: x => x.PhotoId,
                         principalTable: "Photo",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "OutfitXPhotos",
+                name: "OutfitXPhoto",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWID()"),
                     OutfitId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     PhotoId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -165,85 +167,53 @@ namespace NM.Studio.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OutfitXPhotos", x => x.Id);
+                    table.PrimaryKey("PK_OutfitXPhoto", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_OutfitXPhotos_Outfit_OutfitId",
+                        name: "FK_OutfitXPhoto_Outfit_OutfitId",
                         column: x => x.OutfitId,
                         principalTable: "Outfit",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_OutfitXPhotos_Photo_PhotoId",
+                        name: "FK_OutfitXPhoto_Photo_PhotoId",
                         column: x => x.PhotoId,
                         principalTable: "Photo",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ServiceXPhotos",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ServiceId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    PhotoId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastUpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ServiceXPhotos", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ServiceXPhotos_Photo_PhotoId",
-                        column: x => x.PhotoId,
-                        principalTable: "Photo",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_ServiceXPhotos_Service_ServiceId",
-                        column: x => x.ServiceId,
-                        principalTable: "Service",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_AlbumXPhotos_AlbumId",
-                table: "AlbumXPhotos",
+                name: "IX_AlbumXPhoto_AlbumId",
+                table: "AlbumXPhoto",
                 column: "AlbumId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OutfitXPhotos_OutfitId",
-                table: "OutfitXPhotos",
+                name: "IX_AlbumXPhoto_PhotoId",
+                table: "AlbumXPhoto",
+                column: "PhotoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OutfitXPhoto_OutfitId",
+                table: "OutfitXPhoto",
                 column: "OutfitId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OutfitXPhotos_PhotoId",
-                table: "OutfitXPhotos",
+                name: "IX_OutfitXPhoto_PhotoId",
+                table: "OutfitXPhoto",
                 column: "PhotoId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ServiceXPhotos_PhotoId",
-                table: "ServiceXPhotos",
-                column: "PhotoId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ServiceXPhotos_ServiceId",
-                table: "ServiceXPhotos",
-                column: "ServiceId");
         }
 
+        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "AlbumXPhotos");
+                name: "AlbumXPhoto");
 
             migrationBuilder.DropTable(
-                name: "OutfitXPhotos");
+                name: "OutfitXPhoto");
 
             migrationBuilder.DropTable(
-                name: "ServiceXPhotos");
+                name: "Service");
 
             migrationBuilder.DropTable(
                 name: "User");
@@ -256,9 +226,6 @@ namespace NM.Studio.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Photo");
-
-            migrationBuilder.DropTable(
-                name: "Service");
         }
     }
 }

@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace CMS.Studio.API.Controllers;
 
 //[Authorize]
-[Route("photo-management/photos")]
+[Route("photos")]
 public class PhotoController : BaseController
 {
     public PhotoController(IMediator mediator) : base(mediator)

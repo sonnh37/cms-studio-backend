@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace CMS.Studio.API.Controllers;
 
 [Authorize]
-[Route("user-management/users")]
+[Route("users")]
 public class UserController : BaseController
 {
     public UserController(IMediator mediator) : base(mediator)

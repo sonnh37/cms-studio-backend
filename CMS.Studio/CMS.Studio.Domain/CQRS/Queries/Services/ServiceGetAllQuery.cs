@@ -5,7 +5,12 @@ namespace CMS.Studio.Domain.CQRS.Queries.Services;
 
 public class ServiceGetAllQuery : GetAllQuery<ServiceResult>
 {
-    public List<Guid>? ServiceIds { get; set; }
-
     public string? Title { get; set; }
+
+    public string? Description { get; set; }
+
+    public string? Type { get; set; }
+
+    public string? Src { get; set; }
+
 }

@@ -4,12 +4,6 @@ public enum Type
 {
 }
 
-public enum CourseType
-{
-    Online,
-    Offline
-}
-
 public enum SessionType
 {
     Meeting,
