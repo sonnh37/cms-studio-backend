@@ -7,5 +7,4 @@ namespace CMS.Studio.Domain.Contracts.Services;
 
 public interface IOutfitService : IBaseService
 {
-    Task<PaginatedResponse<OutfitResult>> GetAll(OutfitGetAllQuery x);
 }

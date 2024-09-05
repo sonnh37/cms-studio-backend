@@ -8,5 +8,4 @@ public interface IUserRepository : IBaseRepository
 {
     Task<User?> FindUsernameOrEmail(AuthQuery authQuery);
 
-    Task<(List<User>, int)> GetAll(UserGetAllQuery x);
 }

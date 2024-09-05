@@ -2,9 +2,12 @@
 using System.Reflection;
 using AutoMapper;
 using CMS.Studio.Domain.Contracts.Repositories.Bases;
+using CMS.Studio.Domain.CQRS.Queries.Albums;
 using CMS.Studio.Domain.CQRS.Queries.Base;
+using CMS.Studio.Domain.Entities;
 using CMS.Studio.Domain.Entities.Bases;
 using CMS.Studio.Domain.Enums;
+using CMS.Studio.Domain.Utilities;
 using Microsoft.EntityFrameworkCore;
 
 namespace CMS.Studio.Data.Repositories.Base;
@@ -39,7 +42,7 @@ public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : 
             throw new OperationCanceledException("Request was cancelled");
     }
 
-    public async Task<List<TEntity>> ApplySortingAndPaging(IQueryable<TEntity> queryable, GetAllQuery getAllQuery)
+    public async Task<List<TEntity>> ApplySortingAndPaging(IQueryable<TEntity> queryable, GetQueryableQuery getAllQuery)
     {
         queryable = Sort(queryable, getAllQuery);
 
@@ -53,7 +56,7 @@ public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : 
         return await DbSet.AnyAsync(t => t.Id.Equals(id));
     }
 
-    private static IQueryable<TEntity> Sort(IQueryable<TEntity> queryable, GetAllQuery getAllQuery)
+    private static IQueryable<TEntity> Sort(IQueryable<TEntity> queryable, GetQueryableQuery getAllQuery)
     {
         if (!queryable.Any()) return queryable;
 
@@ -117,11 +120,21 @@ public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : 
 
     #region Queries
 
-    public async Task<IList<TEntity>> GetAll(CancellationToken cancellationToken = default)
+    public async Task<List<TEntity>> GetAll(CancellationToken cancellationToken = default)
     {
         var queryable = GetQueryable(cancellationToken);
         var result = await queryable.ToListAsync(cancellationToken);
         return result;
+    }
+    
+    public async Task<(List<TEntity>, int)> GetAll(GetQueryableQuery query)
+    {
+        var queryable = GetQueryable();
+        queryable = QueryFilterUtils.Modify(queryable, query);
+        var totalOrigin = queryable.Count();
+        var results = await ApplySortingAndPaging(queryable, query);
+
+        return (results, totalOrigin);
     }
 
     public virtual async Task<TEntity?> GetById(Guid id)
@@ -167,7 +180,7 @@ public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : 
         return dbSet;
     }
 
-    private IQueryable<TEntity> GetQueryablePagination(IQueryable<TEntity> queryable, GetAllQuery getAllQuery)
+    private IQueryable<TEntity> GetQueryablePagination(IQueryable<TEntity> queryable, GetQueryableQuery getAllQuery)
     {
         queryable = queryable.Skip((getAllQuery.PageNumber - 1) * getAllQuery.PageSize).Take(getAllQuery.PageSize);
 

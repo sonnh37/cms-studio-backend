@@ -8,7 +8,7 @@ using MediatR;
 namespace CMS.Studio.Handler.Queries;
 
 public class OutfitQueryHandler:
-    IRequestHandler<OutfitGetAllQuery, PaginatedResponse<OutfitResult>>,
+    IRequestHandler<OutfitGetAllQuery, TableResponse<OutfitResult>>,
     IRequestHandler<OutfitGetByIdQuery, ItemResponse<OutfitResult>>
 {
     protected readonly IOutfitService _outfitService;
@@ -18,10 +18,10 @@ public class OutfitQueryHandler:
         _outfitService = outfitService;
     }
 
-    public async Task<PaginatedResponse<OutfitResult>> Handle(OutfitGetAllQuery request,
+    public async Task<TableResponse<OutfitResult>> Handle(OutfitGetAllQuery request,
         CancellationToken cancellationToken)
     {
-        return await _outfitService.GetAll(request);
+        return await _outfitService.GetAll<OutfitResult>(request);
     }
 
     public async Task<ItemResponse<OutfitResult>> Handle(OutfitGetByIdQuery request,

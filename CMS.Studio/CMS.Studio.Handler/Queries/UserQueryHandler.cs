@@ -7,7 +7,7 @@ using MediatR;
 namespace CMS.Studio.Handler.Queries;
 
 public class UserQueryHandler :
-    IRequestHandler<UserGetAllQuery, PaginatedResponse<UserResult>>,
+    IRequestHandler<UserGetAllQuery, TableResponse<UserResult>>,
     IRequestHandler<UserGetByIdQuery, ItemResponse<UserResult>>
 {
     protected readonly IUserService _userService;
@@ -17,10 +17,10 @@ public class UserQueryHandler :
         _userService = userService;
     }
 
-    public async Task<PaginatedResponse<UserResult>> Handle(UserGetAllQuery request,
+    public async Task<TableResponse<UserResult>> Handle(UserGetAllQuery request,
         CancellationToken cancellationToken)
     {
-        return await _userService.GetAll(request);
+        return await _userService.GetAll<UserResult>(request);
     }
 
     public async Task<ItemResponse<UserResult>> Handle(UserGetByIdQuery request, CancellationToken cancellationToken)

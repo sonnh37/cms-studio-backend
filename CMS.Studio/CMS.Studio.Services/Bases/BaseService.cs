@@ -3,6 +3,7 @@ using CMS.Studio.Domain.Contracts.Repositories.Bases;
 using CMS.Studio.Domain.Contracts.Services.Bases;
 using CMS.Studio.Domain.Contracts.UnitOfWorks;
 using CMS.Studio.Domain.CQRS.Commands.Base;
+using CMS.Studio.Domain.CQRS.Queries.Base;
 using CMS.Studio.Domain.Entities.Bases;
 using CMS.Studio.Domain.Models;
 using CMS.Studio.Domain.Models.Responses;
@@ -18,7 +19,7 @@ public abstract class BaseService
 public abstract class BaseService<TEntity> : BaseService, IBaseService
     where TEntity : BaseEntity
 {
-    private readonly IBaseRepository<TEntity?> _baseRepository;
+    private readonly IBaseRepository<TEntity> _baseRepository;
     protected readonly IMapper _mapper;
     protected readonly IUnitOfWork _unitOfWork;
 
@@ -39,9 +40,30 @@ public abstract class BaseService<TEntity> : BaseService, IBaseService
         return msgResult;
     }
 
+    public async Task<ItemListResponse<TResult>> GetAll<TResult>() where TResult : BaseResult
+    {
+        var entities = await _baseRepository.GetAll();
+
+        var results = _mapper.Map<List<TResult>>(entities);
+        var msgResults = AppResponse.CreateItemList(results);
+
+        return msgResults;
+    }
+    
+    public async Task<TableResponse<TResult>> GetAll<TResult>(GetQueryableQuery x) where TResult : BaseResult
+    {
+        var entityAndInt = x.IsPagination 
+            ? await _baseRepository.GetAll(x) 
+            : (await _baseRepository.GetAll(), (int?)null);       
+        var results = _mapper.Map<List<TResult>?>(entityAndInt.Item1);
+        var resultsWithTotal = (results, entityAndInt.Item2);
+
+        return AppResponse.CreateTable(resultsWithTotal, x);
+    }
+    
     public async Task<MessageResponse> CreateOrUpdate(CreateOrUpdateCommand createOrUpdateCommand)
     {
-        var entity = await CreareOrUpdateEntity(createOrUpdateCommand);
+        var entity = await CreateOrUpdateEntity(createOrUpdateCommand);
         
         var message = entity != null ? AppConstant.Success : AppConstant.Fail;
         var msg = AppResponse.CreateMessage(message, entity != null);
@@ -49,12 +71,11 @@ public abstract class BaseService<TEntity> : BaseService, IBaseService
         return msg;
     }
     
-    private async Task<TEntity?> CreareOrUpdateEntity(CreateOrUpdateCommand createOrUpdateCommand)
+    private async Task<TEntity?> CreateOrUpdateEntity(CreateOrUpdateCommand createOrUpdateCommand)
     {
         TEntity? entity;
         if (createOrUpdateCommand is UpdateCommand updateCommand)
         {
-            // Update
             entity = await _baseRepository.GetById(updateCommand.Id);
             if (entity == null) return null;
             _mapper.Map(updateCommand, entity);
@@ -63,7 +84,6 @@ public abstract class BaseService<TEntity> : BaseService, IBaseService
         }
         else
         {
-            // Create
             entity = _mapper.Map<TEntity>(createOrUpdateCommand);
             if (entity == null) return null;
             entity.Id = Guid.NewGuid();
@@ -87,15 +107,6 @@ public abstract class BaseService<TEntity> : BaseService, IBaseService
         return msg;
     }
 
-    public async Task<ItemListResponse<TResult>> GetAll<TResult>() where TResult : BaseResult
-    {
-        var entities = await _baseRepository.GetAll();
-
-        var results = _mapper.Map<List<TResult>>(entities);
-        var msgResults = AppResponse.CreateItemList(results);
-
-        return msgResults;
-    }
 
     private static void SetBaseEntityCreate(TEntity? entity)
     {

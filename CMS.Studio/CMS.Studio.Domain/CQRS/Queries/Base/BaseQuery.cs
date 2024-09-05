@@ -9,26 +9,25 @@ public abstract class BaseQuery
 {
 }
 
-public class PaginationQuery : BaseQuery
+public class GetPaginationQuery : BaseQuery
 {
     public int PageNumber { get; set; } = 1;
     public int PageSize { get; set; } = 10;
     public string? SortField { get; set; }
-    public SortOrder? SortOrder { get; set; } 
+    public SortOrder? SortOrder { get; set; } = Enums.SortOrder.Ascending;
 }
 
-public class CommonQueryableQuery : PaginationQuery
+public class GetQueryableQuery : GetPaginationQuery
 {
     public DateTime? FromDate { get; set; }
     public DateTime? ToDate { get; set; }
-}
-
-public class BaseQueryableQuery : CommonQueryableQuery
-{
+    
     public Guid Id { get; set; }
     public string? CreatedBy { get; set; }
     public string? LastUpdatedBy { get; set; }
     public bool? IsDeleted { get; set; }
+    
+    public bool IsPagination { get; set; }
 }
 
 public class GetByIdQuery<TResult> : BaseQuery, IRequest<ItemResponse<TResult>> where TResult : BaseResult
@@ -36,11 +35,8 @@ public class GetByIdQuery<TResult> : BaseQuery, IRequest<ItemResponse<TResult>> 
     public Guid Id { get; set; }
 }
 
-public class GetAllQuery : BaseQueryableQuery
-{
-}
-
-public class GetAllQuery<TResult> : GetAllQuery, IRequest<PaginatedResponse<TResult>>
+public class GetAllQuery<TResult> : GetQueryableQuery, IRequest<TableResponse<TResult>>
     where TResult : BaseResult
 {
+    
 }

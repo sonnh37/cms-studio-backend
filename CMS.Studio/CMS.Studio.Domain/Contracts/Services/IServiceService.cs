@@ -7,5 +7,4 @@ namespace CMS.Studio.Domain.Contracts.Services;
 
 public interface IServiceService : IBaseService
 {
-    Task<PaginatedResponse<ServiceResult>> GetAll(ServiceGetAllQuery x);
 }

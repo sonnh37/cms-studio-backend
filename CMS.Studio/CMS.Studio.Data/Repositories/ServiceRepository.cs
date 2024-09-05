@@ -13,14 +13,5 @@ public class ServiceRepository : BaseRepository<Service>, IServiceRepository
     public ServiceRepository(StudioContext dbContext, IMapper mapper) : base(dbContext, mapper)
     {
     }
-
-    public async Task<(List<Service>, int)> GetAll(ServiceGetAllQuery query)
-    {
-        var queryable = GetQueryable();
-        queryable = ApplyFilter.Service(queryable, query);
-        var totalOrigin = queryable.Count();
-        var results = await ApplySortingAndPaging(queryable, query);
-
-        return (results, totalOrigin);
-    }
+    
 }

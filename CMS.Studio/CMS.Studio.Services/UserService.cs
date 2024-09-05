@@ -33,15 +33,6 @@ public class UserService : BaseService<User>, IUserService
         _configuration = configuration;
     }
     
-    public async Task<PaginatedResponse<UserResult>> GetAll(UserGetAllQuery x)
-    {
-        var userWithTotal = await _userRepository.GetAll(x);
-        var usersResult = _mapper.Map<List<UserResult>>(userWithTotal.Item1);
-        var usersResultWithTotal = (usersResult, userWithTotal.Item2);
-
-        return AppResponse.CreatePaginated(usersResultWithTotal, x);
-    }
-
     public async Task<LoginResponse<UserResult>> Login(AuthQuery x, CancellationToken cancellationToken = default)
     {
         // Check username or email

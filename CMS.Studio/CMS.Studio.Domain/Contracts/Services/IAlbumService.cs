@@ -7,5 +7,4 @@ namespace CMS.Studio.Domain.Contracts.Services;
 
 public interface IAlbumService : IBaseService
 {
-    Task<PaginatedResponse<AlbumResult>> GetAll(AlbumGetAllQuery x);
 }

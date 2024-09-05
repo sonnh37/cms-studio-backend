@@ -7,5 +7,4 @@ namespace CMS.Studio.Domain.Contracts.Services;
 
 public interface IPhotoService : IBaseService
 {
-    Task<PaginatedResponse<PhotoResult>> GetAll(PhotoGetAllQuery x);
 }

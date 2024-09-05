@@ -22,12 +22,4 @@ public class OutfitService : BaseService<Outfit>, IOutfitService
         _outfitRepository = _unitOfWork.OutfitRepository;
     }
 
-    public async Task<PaginatedResponse<OutfitResult>> GetAll(OutfitGetAllQuery x)
-    {
-        var outfitWithTotal = await _outfitRepository.GetAll(x);
-        var outfitsResult = _mapper.Map<List<OutfitResult>>(outfitWithTotal.Item1);
-        var outfitsResultWithTotal = (outfitsResult, outfitWithTotal.Item2);
-
-        return AppResponse.CreatePaginated(outfitsResultWithTotal, x);
-    }
 }

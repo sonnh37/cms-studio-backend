@@ -6,5 +6,4 @@ namespace CMS.Studio.Domain.Contracts.Repositories;
 
 public interface IServiceRepository : IBaseRepository
 {
-    Task<(List<Service>, int)> GetAll(ServiceGetAllQuery x);
 }

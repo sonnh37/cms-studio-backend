@@ -8,7 +8,7 @@ using MediatR;
 namespace CMS.Studio.Handler.Queries;
 
 public class ServiceQueryHandler :
-    IRequestHandler<ServiceGetAllQuery, PaginatedResponse<ServiceResult>>,
+    IRequestHandler<ServiceGetAllQuery, TableResponse<ServiceResult>>,
     IRequestHandler<ServiceGetByIdQuery, ItemResponse<ServiceResult>>
 {
     protected readonly IServiceService _serviceService;
@@ -18,10 +18,10 @@ public class ServiceQueryHandler :
         _serviceService = serviceService;
     }
 
-    public async Task<PaginatedResponse<ServiceResult>> Handle(ServiceGetAllQuery request,
+    public async Task<TableResponse<ServiceResult>> Handle(ServiceGetAllQuery request,
         CancellationToken cancellationToken)
     {
-        return await _serviceService.GetAll(request);
+        return await _serviceService.GetAll<ServiceResult>(request);
     }
 
     public async Task<ItemResponse<ServiceResult>> Handle(ServiceGetByIdQuery request,

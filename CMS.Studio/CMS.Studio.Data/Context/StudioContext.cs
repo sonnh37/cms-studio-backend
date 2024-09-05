@@ -12,6 +12,9 @@ public partial class StudioContext : BaseDbContext
     }
 
     public virtual DbSet<Outfit> Outfits { get; set; } = null!;
+    public virtual DbSet<Color> Colors { get; set; } = null!;
+    public virtual DbSet<Size> Sizes { get; set; } = null!;
+    public virtual DbSet<Category> Categories { get; set; } = null!;
     public virtual DbSet<Photo> Photos { get; set; } = null!;
     public virtual DbSet<OutfitXPhoto> OutfitXPhotos { get; set; } = null!;
     public virtual DbSet<AlbumXPhoto> AlbumXPhotos { get; set; } = null!;
@@ -36,6 +39,45 @@ public partial class StudioContext : BaseDbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Size>(entity =>
+        {
+            entity.ToTable("Size");
+            entity.Property(e => e.Id)
+                .ValueGeneratedOnAdd()
+                .HasDefaultValueSql("NEWID()");
+
+            entity.HasMany(m => m.Outfits)
+                .WithOne(m => m.Size)
+                .HasForeignKey(m => m.SizeId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+        
+        modelBuilder.Entity<Color>(entity =>
+        {
+            entity.ToTable("Color");
+            entity.Property(e => e.Id)
+                .ValueGeneratedOnAdd()
+                .HasDefaultValueSql("NEWID()");
+
+            entity.HasMany(m => m.Outfits)
+                .WithOne(m => m.Color)
+                .HasForeignKey(m => m.ColorId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+        
+        modelBuilder.Entity<Category>(entity =>
+        {
+            entity.ToTable("Category");
+            entity.Property(e => e.Id)
+                .ValueGeneratedOnAdd()
+                .HasDefaultValueSql("NEWID()");
+
+            entity.HasMany(m => m.Outfits)
+                .WithOne(m => m.Category)
+                .HasForeignKey(m => m.CategoryId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+        
         modelBuilder.Entity<Outfit>(entity =>
         {
             entity.ToTable("Outfit");
@@ -131,6 +173,8 @@ public partial class StudioContext : BaseDbContext
             entity.Property(e => e.Id)
                 .ValueGeneratedOnAdd()
                 .HasDefaultValueSql("NEWID()");
+            
+            entity.Property(e => e.Price).HasColumnType("decimal(18, 2)");
 
         });
 

@@ -6,5 +6,4 @@ namespace CMS.Studio.Domain.Contracts.Repositories;
 
 public interface IAlbumRepository : IBaseRepository
 {
-    Task<(List<Album>, int)> GetAll(AlbumGetAllQuery x);
 }

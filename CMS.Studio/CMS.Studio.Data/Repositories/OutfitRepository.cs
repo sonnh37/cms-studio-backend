@@ -14,13 +14,5 @@ public class OutfitRepository : BaseRepository<Outfit>, IOutfitRepository
     {
     }
 
-    public async Task<(List<Outfit>, int)> GetAll(OutfitGetAllQuery query)
-    {
-        var queryable = GetQueryable();
-        queryable = ApplyFilter.Outfit(queryable, query);
-        var totalOrigin = queryable.Count();
-        var results = await ApplySortingAndPaging(queryable, query);
 
-        return (results, totalOrigin);
-    }
 }

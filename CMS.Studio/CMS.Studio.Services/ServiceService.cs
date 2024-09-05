@@ -22,12 +22,4 @@ public class ServiceService : BaseService<Service>, IServiceService
         _serviceRepository = _unitOfWork.ServiceRepository;
     }
 
-    public async Task<PaginatedResponse<ServiceResult>> GetAll(ServiceGetAllQuery x)
-    {
-        var photoWithTotal = await _serviceRepository.GetAll(x);
-        var photosResult = _mapper.Map<List<ServiceResult>>(photoWithTotal.Item1);
-        var photosResultWithTotal = (photosResult, photoWithTotal.Item2);
-
-        return AppResponse.CreatePaginated(photosResultWithTotal, x);
-    }
 }

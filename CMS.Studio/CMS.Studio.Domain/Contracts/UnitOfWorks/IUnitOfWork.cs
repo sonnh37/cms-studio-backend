@@ -17,4 +17,6 @@ public interface IUnitOfWork : IBaseUnitOfWork
     IAlbumRepository AlbumRepository { get; }
     
     IAlbumXPhotoRepository AlbumXPhotoRepository { get; }
+    
+    ICategoryRepository CategoryRepository { get; }
 }

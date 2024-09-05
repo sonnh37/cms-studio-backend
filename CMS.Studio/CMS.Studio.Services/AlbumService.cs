@@ -22,12 +22,4 @@ public class AlbumService : BaseService<Album>, IAlbumService
         _albumRepository = _unitOfWork.AlbumRepository;
     }
 
-    public async Task<PaginatedResponse<AlbumResult>> GetAll(AlbumGetAllQuery x)
-    {
-        var albumWithTotal = await _albumRepository.GetAll(x);
-        var albumsResult = _mapper.Map<List<AlbumResult>>(albumWithTotal.Item1);
-        var albumsResultWithTotal = (albumsResult, albumWithTotal.Item2);
-
-        return AppResponse.CreatePaginated(albumsResultWithTotal, x);
-    }
 }

@@ -6,5 +6,4 @@ namespace CMS.Studio.Domain.Contracts.Repositories;
 
 public interface IOutfitRepository : IBaseRepository
 {
-    Task<(List<Outfit>, int)> GetAll(OutfitGetAllQuery x);
 }

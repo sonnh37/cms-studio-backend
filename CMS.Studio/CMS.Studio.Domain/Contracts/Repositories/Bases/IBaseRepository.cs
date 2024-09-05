@@ -16,9 +16,10 @@ public interface IBaseRepository<TEntity> : IBaseRepository
 
     Task<long> GetTotalCount();
 
-    Task<IList<TEntity>> GetAll(CancellationToken cancellationToken = default);
+    Task<List<TEntity>> GetAll(CancellationToken cancellationToken = default);
+    Task<(List<TEntity>, int)> GetAll(GetQueryableQuery query);
 
-    Task<List<TEntity>> ApplySortingAndPaging(IQueryable<TEntity> queryable, GetAllQuery pagedQuery);
+    Task<List<TEntity>> ApplySortingAndPaging(IQueryable<TEntity> queryable, GetQueryableQuery pagedQuery);
 
     Task<TEntity?> GetById(Guid id);
 

@@ -95,6 +95,66 @@ namespace CMS.Studio.Data.Migrations
                     b.ToTable("AlbumXPhoto", (string)null);
                 });
 
+            modelBuilder.Entity("CMS.Studio.Domain.Entities.Category", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LastUpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("LastUpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Category", (string)null);
+                });
+
+            modelBuilder.Entity("CMS.Studio.Domain.Entities.Color", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LastUpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("LastUpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Color", (string)null);
+                });
+
             modelBuilder.Entity("CMS.Studio.Domain.Entities.Outfit", b =>
                 {
                     b.Property<Guid>("Id")
@@ -102,8 +162,11 @@ namespace CMS.Studio.Data.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasDefaultValueSql("NEWID()");
 
-                    b.Property<string>("Color")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid?>("CategoryId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ColorId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
@@ -129,13 +192,22 @@ namespace CMS.Studio.Data.Migrations
                     b.Property<decimal?>("Price")
                         .HasColumnType("decimal(18, 2)");
 
-                    b.Property<string>("Size")
+                    b.Property<Guid?>("SizeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Sku")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Type")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("ColorId");
+
+                    b.HasIndex("SizeId");
 
                     b.ToTable("Outfit", (string)null);
                 });
@@ -235,6 +307,12 @@ namespace CMS.Studio.Data.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<TimeSpan?>("Duration")
+                        .HasColumnType("time");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -244,18 +322,51 @@ namespace CMS.Studio.Data.Migrations
                     b.Property<DateTime?>("LastUpdatedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal?>("Price")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<string>("Promotion")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Src")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Type")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Service", (string)null);
+                });
+
+            modelBuilder.Entity("CMS.Studio.Domain.Entities.Size", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LastUpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("LastUpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Size", (string)null);
                 });
 
             modelBuilder.Entity("CMS.Studio.Domain.Entities.User", b =>
@@ -341,6 +452,30 @@ namespace CMS.Studio.Data.Migrations
                     b.Navigation("Photo");
                 });
 
+            modelBuilder.Entity("CMS.Studio.Domain.Entities.Outfit", b =>
+                {
+                    b.HasOne("CMS.Studio.Domain.Entities.Category", "Category")
+                        .WithMany("Outfits")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("CMS.Studio.Domain.Entities.Color", "Color")
+                        .WithMany("Outfits")
+                        .HasForeignKey("ColorId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("CMS.Studio.Domain.Entities.Size", "Size")
+                        .WithMany("Outfits")
+                        .HasForeignKey("SizeId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Category");
+
+                    b.Navigation("Color");
+
+                    b.Navigation("Size");
+                });
+
             modelBuilder.Entity("CMS.Studio.Domain.Entities.OutfitXPhoto", b =>
                 {
                     b.HasOne("CMS.Studio.Domain.Entities.Outfit", "Outfit")
@@ -363,6 +498,16 @@ namespace CMS.Studio.Data.Migrations
                     b.Navigation("AlbumXPhotos");
                 });
 
+            modelBuilder.Entity("CMS.Studio.Domain.Entities.Category", b =>
+                {
+                    b.Navigation("Outfits");
+                });
+
+            modelBuilder.Entity("CMS.Studio.Domain.Entities.Color", b =>
+                {
+                    b.Navigation("Outfits");
+                });
+
             modelBuilder.Entity("CMS.Studio.Domain.Entities.Outfit", b =>
                 {
                     b.Navigation("OutfitXPhotos");
@@ -373,6 +518,11 @@ namespace CMS.Studio.Data.Migrations
                     b.Navigation("AlbumsXPhotos");
 
                     b.Navigation("OutfitXPhotos");
+                });
+
+            modelBuilder.Entity("CMS.Studio.Domain.Entities.Size", b =>
+                {
+                    b.Navigation("Outfits");
                 });
 #pragma warning restore 612, 618
         }

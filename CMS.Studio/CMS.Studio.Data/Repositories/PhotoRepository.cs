@@ -14,13 +14,4 @@ public class PhotoRepository : BaseRepository<Photo>, IPhotoRepository
     {
     }
 
-    public async Task<(List<Photo>, int)> GetAll(PhotoGetAllQuery query)
-    {
-        var queryable = GetQueryable();
-        queryable = ApplyFilter.Photo(queryable, query);
-        var totalOrigin = queryable.Count();
-        var results = await ApplySortingAndPaging(queryable, query);
-
-        return (results, totalOrigin);
-    }
 }

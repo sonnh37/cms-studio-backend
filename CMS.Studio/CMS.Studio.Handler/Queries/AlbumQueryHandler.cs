@@ -7,7 +7,7 @@ using MediatR;
 namespace CMS.Studio.Handler.Queries;
 
 public class AlbumQueryHandler:
-    IRequestHandler<AlbumGetAllQuery, PaginatedResponse<AlbumResult>>,
+    IRequestHandler<AlbumGetAllQuery, TableResponse<AlbumResult>>,
     IRequestHandler<AlbumGetByIdQuery, ItemResponse<AlbumResult>>
 {
     protected readonly IAlbumService _albumService;
@@ -17,10 +17,10 @@ public class AlbumQueryHandler:
         _albumService = albumService;
     }
 
-    public async Task<PaginatedResponse<AlbumResult>> Handle(AlbumGetAllQuery request,
+    public async Task<TableResponse<AlbumResult>> Handle(AlbumGetAllQuery request,
         CancellationToken cancellationToken)
     {
-        return await _albumService.GetAll(request);
+        return await _albumService.GetAll<AlbumResult>(request);
     }
 
     public async Task<ItemResponse<AlbumResult>> Handle(AlbumGetByIdQuery request, CancellationToken cancellationToken)

@@ -16,15 +16,20 @@ public static class AppResponse
         return new ItemListResponse<TResult>(AppConstant.Success, results);
     }
 
-    public static PaginatedResponse<TResult> CreatePaginated<TResult>((List<TResult>?, int) item,
-        GetAllQuery pagedQuery)
+    public static TableResponse<TResult> CreateTable<TResult>((List<TResult>?, int?) item,
+        GetQueryableQuery pagedQuery)
         where TResult : BaseResult
     {
-        if (item.Item1 == null) return new PaginatedResponse<TResult>(AppConstant.Fail, pagedQuery, item.Item1);
+        if (item.Item1 == null) return new TableResponse<TResult>(AppConstant.Fail, pagedQuery, item.Item1);
 
-        if (!item.Item1.Any()) return new PaginatedResponse<TResult>(AppConstant.NotFound, pagedQuery, item.Item1);
+        if (!item.Item1.Any()) return new TableResponse<TResult>(AppConstant.NotFound, pagedQuery, item.Item1);
 
-        return new PaginatedResponse<TResult>(AppConstant.Success, pagedQuery, item.Item1, item.Item2);
+        if (item.Item2 == null)
+        {
+            
+        }
+
+        return new TableResponse<TResult>(AppConstant.Success, pagedQuery, item.Item1, item.Item2);
     }
 
     public static ItemResponse<TResult> CreateItem<TResult>(TResult? result)

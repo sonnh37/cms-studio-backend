@@ -11,5 +11,4 @@ public interface IUserService : IBaseService
     Task<LoginResponse<UserResult>> Login(AuthQuery x, CancellationToken cancellationToken = default);
     Task<MessageResponse> Register(UserCreateCommand x, CancellationToken cancellationToken = default);
 
-    Task<PaginatedResponse<UserResult>> GetAll(UserGetAllQuery x);
 }

@@ -10,13 +10,102 @@ public static class DummyData
     public static void SeedDatabase(DbContext context)
     {
         GenerateUsers(context, 20);
+        GenerateColors(context, 10);
+        GenerateCategories(context, 10);
+        GenerateSizes(context, 10);
+        GenerateOutfits(context, 10);
         GeneratePhotos(context, 20);
         GenerateAlbums(context, 20);
-        GenerateOutfits(context, 10);
         GenerateServices(context, 20);
         GenerateAlbumXPhotos(context, 10);
         GenerateOutfitXPhotos(context, 10);
     }
+    
+    private static void GenerateColors(DbContext context, int count)
+    {
+        if (!context.Set<Color>().Any())
+        {
+            var colorFaker = new Faker<Color>()
+                .RuleFor(c => c.Id, f => Guid.NewGuid())
+                .RuleFor(c => c.Name, f => f.Commerce.Color())
+                .RuleFor(o => o.CreatedDate, f => f.Date.Past(2))
+                .RuleFor(o => o.LastUpdatedDate, f => f.Date.Recent())
+                .RuleFor(o => o.IsDeleted, f => false);
+
+            var colors = colorFaker.Generate(count);
+
+            // Pick a common creator email (assuming this field exists)
+            var commonUserEmail = context.Set<User>().FirstOrDefault()?.Email;
+
+            // Set CreatedBy and UpdatedBy to the common email
+            foreach (var color in colors)
+            {
+                color.CreatedBy = commonUserEmail;
+                color.LastUpdatedBy = commonUserEmail;
+            }
+
+            context.Set<Color>().AddRange(colors);
+            context.SaveChanges();
+        }
+    }
+    
+    private static void GenerateCategories(DbContext context, int count)
+    {
+        if (!context.Set<Category>().Any())
+        {
+            var categoryFaker = new Faker<Category>()
+                .RuleFor(c => c.Id, f => Guid.NewGuid())
+                .RuleFor(c => c.Name, f => f.Commerce.Categories(1).First())
+                .RuleFor(o => o.CreatedDate, f => f.Date.Past(2))
+                .RuleFor(o => o.LastUpdatedDate, f => f.Date.Recent())
+                .RuleFor(o => o.IsDeleted, f => false);
+
+            var categories = categoryFaker.Generate(count);
+
+            // Pick a common creator email (assuming this field exists)
+            var commonUserEmail = context.Set<User>().FirstOrDefault()?.Email;
+
+            // Set CreatedBy and UpdatedBy to the common email
+            foreach (var category in categories)
+            {
+                category.CreatedBy = commonUserEmail;
+                category.LastUpdatedBy = commonUserEmail;
+            }
+
+            context.Set<Category>().AddRange(categories);
+            context.SaveChanges();
+        }
+    }
+
+    private static void GenerateSizes(DbContext context, int count)
+    {
+        if (!context.Set<Size>().Any())
+        {
+            var sizeFaker = new Faker<Size>()
+                .RuleFor(s => s.Id, f => Guid.NewGuid())
+                .RuleFor(s => s.Name, f => f.Random.Word())
+                .RuleFor(o => o.CreatedDate, f => f.Date.Past(2))
+                .RuleFor(o => o.LastUpdatedDate, f => f.Date.Recent())
+                .RuleFor(o => o.IsDeleted, f => false);
+
+            var sizes = sizeFaker.Generate(count);
+
+            // Pick a common creator email (assuming this field exists)
+            var commonUserEmail = context.Set<User>().FirstOrDefault()?.Email;
+
+            // Set CreatedBy and UpdatedBy to the common email
+            foreach (var size in sizes)
+            {
+                size.CreatedBy = commonUserEmail;
+                size.LastUpdatedBy = commonUserEmail;
+            }
+
+            context.Set<Size>().AddRange(sizes);
+            context.SaveChanges();
+        }
+    }
+
+
 
     private static void GenerateOutfits(DbContext context, int count)
     {
@@ -24,12 +113,16 @@ public static class DummyData
         {
             var outfitFaker = new Faker<Outfit>()
                 .RuleFor(o => o.Id, f => Guid.NewGuid())
-                .RuleFor(o => o.Type, f => f.PickRandom(new[] { "Dress", "Suit", "Casual", "Formal", "Traditional" }))
+                .RuleFor(o => o.Sku, f => f.Commerce.Ean13())
+                .RuleFor(o => o.CategoryId, f => f.PickRandom(context.Set<Category>().Select(c => c.Id).ToList()))
+                .RuleFor(o => o.SizeId, f => f.PickRandom(context.Set<Size>().Select(s => s.Id).ToList()))
+                .RuleFor(o => o.ColorId, f => f.PickRandom(context.Set<Color>().Select(c => c.Id).ToList()))
                 .RuleFor(o => o.Name, f => f.Commerce.ProductName())
-                .RuleFor(o => o.Size, f => f.PickRandom(new[] { "XS", "S", "M", "L", "XL", "XXL" }))
-                .RuleFor(o => o.Price, f => f.Finance.Amount(50, 500))
-                .RuleFor(o => o.Color, f => f.Commerce.Color())
+                .RuleFor(o => o.Price, f => f.Finance.Amount(50, 500))  // Giá từ 50 đến 500
                 .RuleFor(o => o.Description, f => f.Lorem.Paragraph())
+                .RuleFor(o => o.Status, f => f.PickRandom<OutfitStatus>())  // Ngẫu nhiên chọn trạng thái
+                .RuleFor(o => o.CreatedDate, f => f.Date.Past(2))
+                .RuleFor(o => o.LastUpdatedDate, f => f.Date.Recent())
                 .RuleFor(o => o.CreatedDate, f => f.Date.Past(2))
                 .RuleFor(o => o.LastUpdatedDate, f => f.Date.Recent())
                 .RuleFor(o => o.IsDeleted, f => false);
@@ -99,13 +192,20 @@ public static class DummyData
         {
             var serviceFaker = new Faker<Service>()
                 .RuleFor(s => s.Id, f => Guid.NewGuid())
-                .RuleFor(s => s.Title, f => f.Commerce.ProductName())
+                .RuleFor(s => s.Name, f => f.Commerce.ProductName())
                 .RuleFor(s => s.Description, f => f.Lorem.Paragraph())
-                .RuleFor(s => s.Type, f => f.Commerce.Categories(1).First())
-                .RuleFor(s => s.Src, f => f.Image.PicsumUrl())
-                .RuleFor(s => s.CreatedDate, f => f.Date.Past(2))
-                .RuleFor(s => s.LastUpdatedDate, f => f.Date.Recent())
-                .RuleFor(s => s.IsDeleted, f => false);
+                .RuleFor(s => s.Src, f => f.Internet.Url())
+                .RuleFor(s => s.Price, f => f.Finance.Amount(50, 1000))  // giá từ 50 đến 1000
+                .RuleFor(s => s.Duration, f => 
+                {
+                    var randomMinutes = f.Random.Int(30, 240); // thời gian từ 30 phút đến 4 giờ
+                    return TimeSpan.FromMinutes(randomMinutes);
+                })
+                .RuleFor(s => s.Promotion, f => f.Commerce.ProductAdjective())  // Ví dụ như "Giảm giá 20%"
+                .RuleFor(s => s.IsActive, f => f.Random.Bool())
+                .RuleFor(u => u.CreatedDate, f => f.Date.Past(2))
+                .RuleFor(u => u.LastUpdatedDate, f => f.Date.Recent())
+                .RuleFor(u => u.IsDeleted, f => false);
 
             // Generate services
             var services = serviceFaker.Generate(count);
