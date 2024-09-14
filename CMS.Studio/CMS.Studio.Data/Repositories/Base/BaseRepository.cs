@@ -27,7 +27,7 @@ public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : 
         Mapper = mapper;
     }
 
-    private DbSet<TEntity> DbSet
+    public DbSet<TEntity> DbSet
     {
         get
         {
@@ -123,6 +123,7 @@ public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : 
     public async Task<List<TEntity>> GetAll(CancellationToken cancellationToken = default)
     {
         var queryable = GetQueryable(cancellationToken);
+        queryable = IncludeHelper.Modify(queryable);
         var result = await queryable.ToListAsync(cancellationToken);
         return result;
     }
@@ -130,7 +131,8 @@ public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : 
     public async Task<(List<TEntity>, int)> GetAll(GetQueryableQuery query)
     {
         var queryable = GetQueryable();
-        queryable = QueryFilterUtils.Modify(queryable, query);
+        queryable = FilterHelper.Modify(queryable, query);
+        queryable = IncludeHelper.Modify(queryable);
         var totalOrigin = queryable.Count();
         var results = await ApplySortingAndPaging(queryable, query);
 
@@ -140,6 +142,7 @@ public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : 
     public virtual async Task<TEntity?> GetById(Guid id)
     {
         var queryable = GetQueryable(x => x.Id == id);
+        queryable = IncludeHelper.Modify(queryable);
         var entity = await queryable.FirstOrDefaultAsync();
 
         return entity;

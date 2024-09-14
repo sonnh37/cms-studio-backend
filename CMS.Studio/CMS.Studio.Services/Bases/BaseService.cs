@@ -35,7 +35,7 @@ public abstract class BaseService<TEntity> : BaseService, IBaseService
         var entity = await _baseRepository.GetById(id);
 
         var result = _mapper.Map<TResult>(entity);
-        var msgResult = AppResponse.CreateItem(result);
+        var msgResult = ResponseHelper.CreateItem(result);
 
         return msgResult;
     }
@@ -45,7 +45,7 @@ public abstract class BaseService<TEntity> : BaseService, IBaseService
         var entities = await _baseRepository.GetAll();
 
         var results = _mapper.Map<List<TResult>>(entities);
-        var msgResults = AppResponse.CreateItemList(results);
+        var msgResults = ResponseHelper.CreateItemList(results);
 
         return msgResults;
     }
@@ -58,15 +58,15 @@ public abstract class BaseService<TEntity> : BaseService, IBaseService
         var results = _mapper.Map<List<TResult>?>(entityAndInt.Item1);
         var resultsWithTotal = (results, entityAndInt.Item2);
 
-        return AppResponse.CreateTable(resultsWithTotal, x);
+        return ResponseHelper.CreateTable(resultsWithTotal, x);
     }
     
     public async Task<MessageResponse> CreateOrUpdate(CreateOrUpdateCommand createOrUpdateCommand)
     {
         var entity = await CreateOrUpdateEntity(createOrUpdateCommand);
         
-        var message = entity != null ? AppConstant.Success : AppConstant.Fail;
-        var msg = AppResponse.CreateMessage(message, entity != null);
+        var message = entity != null ? ConstantHelper.Success : ConstantHelper.Fail;
+        var msg = ResponseHelper.CreateMessage(message, entity != null);
         
         return msg;
     }
@@ -97,12 +97,12 @@ public abstract class BaseService<TEntity> : BaseService, IBaseService
     
     public async Task<MessageResponse> DeleteById(Guid id)
     {
-        if (id == Guid.Empty) return AppResponse.CreateMessage(AppConstant.NotFound, false);
+        if (id == Guid.Empty) return ResponseHelper.CreateMessage(ConstantHelper.NotFound, false);
 
         var entity = await DeleteEntity(id);
 
-        var message = entity != null ? AppConstant.Success : AppConstant.Fail;
-        var msg = AppResponse.CreateMessage(message, entity != null);
+        var message = entity != null ? ConstantHelper.Success : ConstantHelper.Fail;
+        var msg = ResponseHelper.CreateMessage(message, entity != null);
 
         return msg;
     }

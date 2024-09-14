@@ -39,15 +39,15 @@ public class UserService : BaseService<User>, IUserService
         var user = await _userRepository.FindUsernameOrEmail(x);
         var userResult = new UserResult();
 
-        if (user == null) return AppResponse.CreateLogin(userResult, null, null);
+        if (user == null) return ResponseHelper.CreateLogin(userResult, null, null);
 
         // Check password
         var isPasswordValid = BCrypt.Net.BCrypt.Verify(x.Password, user.Password);
-        if (!isPasswordValid) return AppResponse.CreateLogin(userResult, null, null);
+        if (!isPasswordValid) return ResponseHelper.CreateLogin(userResult, null, null);
 
         userResult = _mapper.Map<UserResult>(user);
         var token = CreateToken(user);
-        var msgResult = AppResponse.CreateLogin(userResult,
+        var msgResult = ResponseHelper.CreateLogin(userResult,
             new JwtSecurityTokenHandler().WriteToken(token),
             token.ValidTo.ToString());
 

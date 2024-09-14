@@ -26,7 +26,7 @@ public class AlbumXPhotoCommandHandler : BaseCommandHandler,
 
     public async Task<MessageResponse> Handle(AlbumXPhotoDeleteCommand request, CancellationToken cancellationToken)
     {
-        var msgView = await _baseService.DeleteById(request.Id);
+        var msgView = await _albumXPhotoService.DeleteById(request);
         return msgView;
     }
 

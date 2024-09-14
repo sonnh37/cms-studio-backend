@@ -194,7 +194,7 @@ public static class DummyData
                 .RuleFor(s => s.Id, f => Guid.NewGuid())
                 .RuleFor(s => s.Name, f => f.Commerce.ProductName())
                 .RuleFor(s => s.Description, f => f.Lorem.Paragraph())
-                .RuleFor(s => s.Src, f => f.Internet.Url())
+                .RuleFor(s => s.Src, f => f.Image.PicsumUrl())
                 .RuleFor(s => s.Price, f => f.Finance.Amount(50, 1000))  // giá từ 50 đến 1000
                 .RuleFor(s => s.Duration, f => 
                 {

@@ -1,6 +1,6 @@
 ﻿namespace CMS.Studio.Domain.Utilities;
 
-public class AppConstant
+public class ConstantHelper
 {
     public const string Success = "Success";
     public const string Fail = "Fail";

@@ -10,7 +10,7 @@ using CMS.Studio.Domain.Entities.Bases;
 using Microsoft.EntityFrameworkCore;
 namespace CMS.Studio.Domain.Utilities;
 
-public static class QueryFilterUtils
+public static class FilterHelper
 {
     public static IQueryable<TEntity>? Modify<TEntity>(IQueryable<TEntity>? queryable, GetQueryableQuery query)
         where TEntity : BaseEntity
