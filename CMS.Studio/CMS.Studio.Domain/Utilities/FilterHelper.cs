@@ -58,6 +58,12 @@ public static class FilterHelper
 
     private static IQueryable<Service>? Service(IQueryable<Service>? queryable, ServiceGetAllQuery query)
     {
+        if (!string.IsNullOrEmpty(query.Name))
+        {
+            var title = SlugHelper.FromSlug(query.Name.ToLower());
+            queryable = queryable.Where(m => m.Name!.ToLower() == title);
+        }
+        
         return Base(queryable, query);
     }
 
