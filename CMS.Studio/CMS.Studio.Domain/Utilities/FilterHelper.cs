@@ -61,11 +61,19 @@ public static class FilterHelper
         return Base(queryable, query);
     }
 
-    private static IQueryable<Album>? Album(IQueryable<Album>? queryable, AlbumGetAllQuery query)
+    private static IQueryable<Album> Album(IQueryable<Album> queryable, AlbumGetAllQuery query)
     {
-        queryable = queryable.Include(m => m.AlbumXPhotos).ThenInclude(m => m.Photo);
+        // Nếu có Title, thực hiện lọc dữ liệu ngay trên IQueryable
+        if (!string.IsNullOrEmpty(query.Title))
+        {
+            var title = SlugHelper.FromSlug(query.Title.ToLower());
+            queryable = queryable.Where(m => m.Title!.ToLower() == title);
+        }
+
+        // Tiếp tục thực hiện các thao tác khác trên queryable
         return Base(queryable, query);
     }
+
 
     private static IQueryable<User>? User(IQueryable<User>? queryable, UserGetAllQuery query)
     {

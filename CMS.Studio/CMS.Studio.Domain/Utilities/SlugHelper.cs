@@ -34,6 +34,20 @@ public static class SlugHelper
 
         return slug;
     }
+    
+    // Chuyển đổi slug trở lại thành tiêu đề
+    public static string FromSlug(string slug)
+    {
+        if (string.IsNullOrWhiteSpace(slug))
+        {
+            return string.Empty;
+        }
+
+        // Chuyển slug thành chữ thường, thay thế dấu gạch ngang bằng khoảng trắng
+        var title = slug.Replace("-", " ");
+
+        return title;
+    }
 
     private static string RemoveAccents(string text)
     {
