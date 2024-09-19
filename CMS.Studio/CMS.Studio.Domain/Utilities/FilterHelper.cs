@@ -69,14 +69,22 @@ public static class FilterHelper
 
     private static IQueryable<Album> Album(IQueryable<Album> queryable, AlbumGetAllQuery query)
     {
-        // Nếu có Title, thực hiện lọc dữ liệu ngay trên IQueryable
         if (!string.IsNullOrEmpty(query.Title))
         {
             var title = SlugHelper.FromSlug(query.Title.ToLower());
-            queryable = queryable.Where(m => m.Title!.ToLower() == title);
+            queryable = queryable.Where(m => m.Title!.ToLower().Contains(title));
+        }
+        
+        if (!string.IsNullOrEmpty(query.Description))
+        {
+            queryable = queryable.Where(m => m.Description!.ToLower().Contains(query.Description.ToLower()));
         }
 
-        // Tiếp tục thực hiện các thao tác khác trên queryable
+        if (query.IsDeleted.HasValue)
+        {
+            queryable = queryable.Where(m => m.IsDeleted == query.IsDeleted.Value);
+        }
+
         return Base(queryable, query);
     }
 
