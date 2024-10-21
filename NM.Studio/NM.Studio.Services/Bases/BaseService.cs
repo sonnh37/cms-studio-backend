@@ -30,57 +30,101 @@ public abstract class BaseService<TEntity> : BaseService, IBaseService
         _baseRepository = _unitOfWork.GetRepositoryByEntity<TEntity>();
     }
 
-    public async Task<ItemResponse<TResult>> GetById<TResult>(Guid id) where TResult : BaseResult
+    #region Queries
+
+ public async Task<BusinessResult> GetById<TResult>(Guid id) where TResult : BaseResult
     {
-        var entity = await _baseRepository.GetById(id);
-
-        var result = _mapper.Map<TResult>(entity);
-        var msgResult = ResponseHelper.CreateItem(result);
-
-        return msgResult;
+        try
+        {
+            var entity = await _baseRepository.GetById(id);
+            var result = _mapper.Map<TResult>(entity);
+            return ResponseHelper.GetData(result);
+        }
+        catch (Exception ex)
+        {
+            string errorMessage = $"An error {typeof(TResult).Name}: {ex.Message}";
+            return ResponseHelper.Error(errorMessage);
+        }
     }
 
-    public async Task<ItemListResponse<TResult>> GetAll<TResult>() where TResult : BaseResult
+    public async Task<BusinessResult> GetAll<TResult>() where TResult : BaseResult
     {
-        var entities = await _baseRepository.GetAll();
-
-        var results = _mapper.Map<List<TResult>>(entities);
-        var msgResults = ResponseHelper.CreateItemList(results);
-
-        return msgResults;
+        try
+        {
+            var entities = await _baseRepository.GetAll();
+            var results = _mapper.Map<List<TResult>>(entities);
+            return ResponseHelper.GetDatas(results);
+        }
+        catch (Exception ex)
+        {
+            string errorMessage = $"An error {typeof(TResult).Name}: {ex.Message}"; 
+            return ResponseHelper.Error(errorMessage);
+        }
     }
 
-    public async Task<TableResponse<TResult>> GetAll<TResult>(GetQueryableQuery x) where TResult : BaseResult
+    public async Task<BusinessResult> GetAll<TResult>(GetQueryableQuery x) where TResult : BaseResult
     {
-        var entityAndInt = x.IsPagination
-            ? await _baseRepository.GetAll(x)
-            : (await _baseRepository.GetAll(), (int?)null);
-        var results = _mapper.Map<List<TResult>?>(entityAndInt.Item1);
-        var resultsWithTotal = (results, entityAndInt.Item2);
+        try
+        {
+            List<TResult>? results;
+            int totalItems = 0;
 
-        return ResponseHelper.CreateTable(resultsWithTotal, x);
+            if (!x.IsPagination)
+            {
+                var allData = await _baseRepository.GetAll(x);
+                results = _mapper.Map<List<TResult>?>(allData);
+                return ResponseHelper.GetDatas(results);
+            }
+
+            var tuple = await _baseRepository.GetPaged(x);
+            results = _mapper.Map<List<TResult>?>(tuple.Item1);
+            totalItems = tuple.Item2;
+
+            return ResponseHelper.GetPaginatedDatas((results, totalItems), x);
+        }
+        catch (Exception ex)
+        {
+            var errorMessage = $"An error occurred in {typeof(TResult).Name}: {ex.Message}";
+            return ResponseHelper.Error(errorMessage);
+        }
     }
 
-    public async Task<MessageResponse> CreateOrUpdate(CreateOrUpdateCommand createOrUpdateCommand)
+    #endregion
+
+    #region Commands
+
+    public async Task<BusinessResult> CreateOrUpdate<TResult>(CreateOrUpdateCommand createOrUpdateCommand) where TResult : BaseResult
     {
-        var entity = await CreateOrUpdateEntity(createOrUpdateCommand);
-
-        var message = entity != null ? ConstantHelper.Success : ConstantHelper.Fail;
-        var msg = ResponseHelper.CreateMessage(message, entity != null);
-
-        return msg;
+        try
+        {
+            var entity = await CreateOrUpdateEntity(createOrUpdateCommand);
+            var result = _mapper.Map<TResult>(entity);
+            var msg = ResponseHelper.SaveData(result);
+            
+            return msg;
+        }
+        catch (Exception ex)
+        {
+            var errorMessage = $"An error occurred while updating {typeof(TEntity).Name}: {ex.Message}";
+            return ResponseHelper.Error(errorMessage);
+        }
     }
 
-    public async Task<MessageResponse> DeleteById(Guid id)
+    public async Task<BusinessResult> DeleteById(Guid id)
     {
-        if (id == Guid.Empty) return ResponseHelper.CreateMessage(ConstantHelper.NotFound, false);
+        try
+        {
+            if (id == Guid.Empty) return new BusinessResult(Const.WARNING_NO_DATA_CODE, Const.WARNING_NO_DATA_MSG);
 
-        var entity = await DeleteEntity(id);
+            var entity = await DeleteEntity(id);
 
-        var message = entity != null ? ConstantHelper.Success : ConstantHelper.Fail;
-        var msg = ResponseHelper.CreateMessage(message, entity != null);
-
-        return msg;
+            return ResponseHelper.DeleteData(entity != null);
+        }
+        catch (Exception ex)
+        {
+            var errorMessage = $"An error occurred while deleting {typeof(TEntity).Name} with ID {id}: {ex.Message}";
+            return ResponseHelper.Error(errorMessage);
+        }
     }
 
     private async Task<TEntity?> CreateOrUpdateEntity(CreateOrUpdateCommand createOrUpdateCommand)
@@ -145,4 +189,6 @@ public abstract class BaseService<TEntity> : BaseService, IBaseService
         var saveChanges = await _unitOfWork.SaveChanges();
         return saveChanges ? entity : default;
     }
+
+    #endregion
 }

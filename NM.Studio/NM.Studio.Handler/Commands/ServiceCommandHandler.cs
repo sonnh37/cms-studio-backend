@@ -2,14 +2,15 @@
 using NM.Studio.Domain.CQRS.Commands.Services;
 using NM.Studio.Domain.Models.Responses;
 using MediatR;
+using NM.Studio.Domain.Models.Results;
 using NM.Studio.Handler.Commands.Base;
 
 namespace NM.Studio.Handler.Commands;
 
 public class ServiceCommandHandler : BaseCommandHandler,
-    IRequestHandler<ServiceUpdateCommand, MessageResponse>,
-    IRequestHandler<ServiceDeleteCommand, MessageResponse>,
-    IRequestHandler<ServiceCreateCommand, MessageResponse>
+    IRequestHandler<ServiceUpdateCommand, BusinessResult>,
+    IRequestHandler<ServiceDeleteCommand, BusinessResult>,
+    IRequestHandler<ServiceCreateCommand, BusinessResult>
 {
     private readonly IServiceService _serviceService;
 
@@ -18,21 +19,21 @@ public class ServiceCommandHandler : BaseCommandHandler,
         _serviceService = serviceService;
     }
 
-    public async Task<MessageResponse> Handle(ServiceCreateCommand request, CancellationToken cancellationToken)
+    public async Task<BusinessResult> Handle(ServiceCreateCommand request, CancellationToken cancellationToken)
     {
-        var msgView = await _serviceService.CreateOrUpdate(request);
+        var msgView = await _serviceService.CreateOrUpdate<ServiceResult>(request);
         return msgView;
     }
 
-    public async Task<MessageResponse> Handle(ServiceDeleteCommand request, CancellationToken cancellationToken)
+    public async Task<BusinessResult> Handle(ServiceDeleteCommand request, CancellationToken cancellationToken)
     {
         var msgView = await _baseService.DeleteById(request.Id);
         return msgView;
     }
 
-    public async Task<MessageResponse> Handle(ServiceUpdateCommand request, CancellationToken cancellationToken)
+    public async Task<BusinessResult> Handle(ServiceUpdateCommand request, CancellationToken cancellationToken)
     {
-        var msgView = await _baseService.CreateOrUpdate(request);
+        var msgView = await _baseService.CreateOrUpdate<ServiceResult>(request);
         return msgView;
     }
 }

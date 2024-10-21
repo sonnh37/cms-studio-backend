@@ -6,5 +6,5 @@ namespace NM.Studio.Domain.Contracts.Services;
 
 public interface IOutfitXPhotoService : IBaseService
 {
-    Task<MessageResponse> DeleteById(OutfitXPhotoDeleteCommand command);
+    Task<BusinessResult> DeleteById(OutfitXPhotoDeleteCommand command);
 }

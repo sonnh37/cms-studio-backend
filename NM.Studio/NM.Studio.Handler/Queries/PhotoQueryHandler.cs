@@ -7,8 +7,8 @@ using MediatR;
 namespace NM.Studio.Handler.Queries;
 
 public class PhotoQueryHandler :
-    IRequestHandler<PhotoGetAllQuery, TableResponse<PhotoResult>>,
-    IRequestHandler<PhotoGetByIdQuery, ItemResponse<PhotoResult>>
+    IRequestHandler<PhotoGetAllQuery, BusinessResult>,
+    IRequestHandler<PhotoGetByIdQuery, BusinessResult>
 {
     protected readonly IPhotoService _photoService;
 
@@ -17,13 +17,13 @@ public class PhotoQueryHandler :
         _photoService = photoService;
     }
 
-    public async Task<TableResponse<PhotoResult>> Handle(PhotoGetAllQuery request,
+    public async Task<BusinessResult> Handle(PhotoGetAllQuery request,
         CancellationToken cancellationToken)
     {
         return await _photoService.GetAll<PhotoResult>(request);
     }
 
-    public async Task<ItemResponse<PhotoResult>> Handle(PhotoGetByIdQuery request, CancellationToken cancellationToken)
+    public async Task<BusinessResult> Handle(PhotoGetByIdQuery request, CancellationToken cancellationToken)
     {
         return await _photoService.GetById<PhotoResult>(request.Id);
     }

@@ -13,7 +13,7 @@ namespace NM.Studio.Domain.Utilities;
 
 public static class FilterHelper
 {
-    public static IQueryable<TEntity>? Modify<TEntity>(IQueryable<TEntity>? queryable, GetQueryableQuery query)
+    public static IQueryable<TEntity>? Apply<TEntity>(IQueryable<TEntity>? queryable, GetQueryableQuery query)
         where TEntity : BaseEntity
     {
         return query switch

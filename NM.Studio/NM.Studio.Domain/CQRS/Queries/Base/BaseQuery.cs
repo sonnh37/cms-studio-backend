@@ -30,12 +30,12 @@ public class GetQueryableQuery : GetPaginationQuery
     public bool IsPagination { get; set; }
 }
 
-public class GetByIdQuery<TResult> : BaseQuery, IRequest<ItemResponse<TResult>> where TResult : BaseResult
+public class GetByIdQuery<TResult> : BaseQuery, IRequest<BusinessResult> where TResult : BaseResult
 {
     public Guid Id { get; set; }
 }
 
-public class GetAllQuery<TResult> : GetQueryableQuery, IRequest<TableResponse<TResult>>
+public class GetAllQuery<TResult> : GetQueryableQuery, IRequest<BusinessResult>
     where TResult : BaseResult
 {
 }

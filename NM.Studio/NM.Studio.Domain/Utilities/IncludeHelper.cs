@@ -6,7 +6,7 @@ namespace NM.Studio.Domain.Utilities;
 
 public static class IncludeHelper
 {
-    public static IQueryable<TEntity> Modify<TEntity>(IQueryable<TEntity> queryable)
+    public static IQueryable<TEntity> Apply<TEntity>(IQueryable<TEntity> queryable)
         where TEntity : BaseEntity
     {
         return (queryable switch

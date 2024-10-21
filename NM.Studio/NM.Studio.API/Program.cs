@@ -127,7 +127,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseMiddleware<TokenUserMiddleware>();
+app.UseMiddleware<RequestTokenUserMiddleware>();
 
 using (var scope = app.Services.CreateScope())
 {

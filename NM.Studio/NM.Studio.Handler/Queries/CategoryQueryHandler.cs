@@ -7,8 +7,8 @@ using MediatR;
 namespace NM.Studio.Handler.Queries;
 
 public class CategoryQueryHandler :
-    IRequestHandler<CategoryGetAllQuery, TableResponse<CategoryResult>>,
-    IRequestHandler<CategoryGetByIdQuery, ItemResponse<CategoryResult>>
+    IRequestHandler<CategoryGetAllQuery, BusinessResult>,
+    IRequestHandler<CategoryGetByIdQuery, BusinessResult>
 {
     protected readonly ICategoryService _categoryService;
 
@@ -17,13 +17,13 @@ public class CategoryQueryHandler :
         _categoryService = categoryService;
     }
 
-    public async Task<TableResponse<CategoryResult>> Handle(CategoryGetAllQuery request,
+    public async Task<BusinessResult> Handle(CategoryGetAllQuery request,
         CancellationToken cancellationToken)
     {
         return await _categoryService.GetAll<CategoryResult>(request);
     }
 
-    public async Task<ItemResponse<CategoryResult>> Handle(CategoryGetByIdQuery request,
+    public async Task<BusinessResult> Handle(CategoryGetByIdQuery request,
         CancellationToken cancellationToken)
     {
         return await _categoryService.GetById<CategoryResult>(request.Id);

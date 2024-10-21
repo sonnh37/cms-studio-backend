@@ -7,8 +7,8 @@ using MediatR;
 namespace NM.Studio.Handler.Queries;
 
 public class AlbumQueryHandler :
-    IRequestHandler<AlbumGetAllQuery, TableResponse<AlbumResult>>,
-    IRequestHandler<AlbumGetByIdQuery, ItemResponse<AlbumResult>>
+    IRequestHandler<AlbumGetAllQuery, BusinessResult>,
+    IRequestHandler<AlbumGetByIdQuery, BusinessResult>
 {
     protected readonly IAlbumService _albumService;
 
@@ -17,13 +17,13 @@ public class AlbumQueryHandler :
         _albumService = albumService;
     }
 
-    public async Task<TableResponse<AlbumResult>> Handle(AlbumGetAllQuery request,
+    public async Task<BusinessResult> Handle(AlbumGetAllQuery request,
         CancellationToken cancellationToken)
     {
         return await _albumService.GetAll<AlbumResult>(request);
     }
 
-    public async Task<ItemResponse<AlbumResult>> Handle(AlbumGetByIdQuery request, CancellationToken cancellationToken)
+    public async Task<BusinessResult> Handle(AlbumGetByIdQuery request, CancellationToken cancellationToken)
     {
         return await _albumService.GetById<AlbumResult>(request.Id);
     }

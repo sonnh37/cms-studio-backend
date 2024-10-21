@@ -7,7 +7,7 @@ public abstract class BaseCommand
 {
 }
 
-public class CreateOrUpdateCommand : BaseCommand, IRequest<MessageResponse>
+public class CreateOrUpdateCommand : BaseCommand, IRequest<BusinessResult>
 {
 }
 
@@ -20,7 +20,7 @@ public class UpdateCommand : CreateOrUpdateCommand
     public Guid Id { get; set; }
 }
 
-public class DeleteCommand : BaseCommand, IRequest<MessageResponse>
+public class DeleteCommand : BaseCommand, IRequest<BusinessResult>
 {
     public Guid Id { get; set; }
 }

@@ -21,18 +21,18 @@ public class AlbumXPhotoService : BaseService<AlbumXPhoto>, IAlbumXPhotoService
         _albumXPhotoRepository = _unitOfWork.AlbumXPhotoRepository;
     }
 
-    public async Task<MessageResponse> DeleteById(AlbumXPhotoDeleteCommand command)
+    public async Task<BusinessResult> DeleteById(AlbumXPhotoDeleteCommand command)
     {
         if (command.AlbumId == Guid.Empty || command.PhotoId == Guid.Empty)
-            return ResponseHelper.CreateMessage(ConstantHelper.NotFound, false);
+            return ResponseHelper.DeleteData(false);
 
         var entity = await _albumXPhotoRepository.GetById(command);
-        if (entity == null) return ResponseHelper.CreateMessage(ConstantHelper.NotFound, false);
+        if (entity == null) return ResponseHelper.DeleteData(false);
         _albumXPhotoRepository.Delete(entity);
         var saveChanges = await _unitOfWork.SaveChanges();
 
-        if (!saveChanges) return ResponseHelper.CreateMessage(ConstantHelper.Fail, false);
+        if (!saveChanges) return ResponseHelper.DeleteData(false);
 
-        return ResponseHelper.CreateMessage(ConstantHelper.Success, true);
+        return ResponseHelper.DeleteData(true);
     }
 }

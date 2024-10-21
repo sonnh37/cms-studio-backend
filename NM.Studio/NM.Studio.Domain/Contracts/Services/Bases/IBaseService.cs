@@ -5,15 +5,21 @@ using NM.Studio.Domain.Models.Results.Bases;
 
 namespace NM.Studio.Domain.Contracts.Services.Bases;
 
+
+// public interface IBaseService
+// {
+//     
+// }
 public interface IBaseService
 {
-    Task<ItemListResponse<TResult>> GetAll<TResult>() where TResult : BaseResult;
+    Task<BusinessResult> GetAll<TResult>() where TResult : BaseResult;
 
-    Task<TableResponse<TResult>> GetAll<TResult>(GetQueryableQuery x) where TResult : BaseResult;
+    Task<BusinessResult> GetAll<TResult>(GetQueryableQuery query) where TResult : BaseResult;
 
-    Task<ItemResponse<TResult>> GetById<TResult>(Guid id) where TResult : BaseResult;
+    Task<BusinessResult> GetById<TResult>(Guid id) where TResult : BaseResult;
 
-    Task<MessageResponse> CreateOrUpdate(CreateOrUpdateCommand createOrUpdateCommand);
+    Task<BusinessResult> DeleteById(Guid id);
 
-    Task<MessageResponse> DeleteById(Guid id);
+    Task<BusinessResult> CreateOrUpdate<TResult>(CreateOrUpdateCommand createOrUpdateCommand) where TResult : BaseResult;
+
 }

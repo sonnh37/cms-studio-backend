@@ -118,29 +118,42 @@ public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : 
 
     #region Queries
 
-    public async Task<List<TEntity>> GetAll(CancellationToken cancellationToken = default)
+    // get all
+    public async Task<List<TEntity>> GetAll()
     {
-        var queryable = GetQueryable(cancellationToken);
-        queryable = IncludeHelper.Modify(queryable);
-        var result = await queryable.ToListAsync(cancellationToken);
+        var queryable = GetQueryable();
+        queryable = IncludeHelper.Apply(queryable);
+        var result = await queryable.ToListAsync();
         return result;
     }
 
-    public async Task<(List<TEntity>, int)> GetAll(GetQueryableQuery query)
+    // get with pagination ( filter )
+    public async Task<(List<TEntity>, int)> GetPaged(GetQueryableQuery query)
     {
         var queryable = GetQueryable();
-        queryable = FilterHelper.Modify(queryable, query);
-        queryable = IncludeHelper.Modify(queryable);
+        queryable = FilterHelper.Apply(queryable, query);
+        queryable = IncludeHelper.Apply(queryable);
         var totalOrigin = queryable.Count();
         var results = await ApplySortingAndPaging(queryable, query);
 
         return (results, totalOrigin);
     }
 
+    // get all with no pagination ( filter )
+    public async Task<List<TEntity>> GetAll(GetQueryableQuery query)
+    {
+        var queryable = GetQueryable();
+        queryable = FilterHelper.Apply(queryable, query);
+        queryable = IncludeHelper.Apply(queryable);
+        var results = await queryable.ToListAsync();
+
+        return results;
+    }
+
     public virtual async Task<TEntity?> GetById(Guid id)
     {
         var queryable = GetQueryable(x => x.Id == id);
-        queryable = IncludeHelper.Modify(queryable);
+        queryable = IncludeHelper.Apply(queryable);
         var entity = await queryable.FirstOrDefaultAsync();
 
         return entity;
