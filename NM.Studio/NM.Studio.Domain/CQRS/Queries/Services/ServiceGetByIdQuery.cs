@@ -3,6 +3,6 @@ using NM.Studio.Domain.Models.Results;
 
 namespace NM.Studio.Domain.CQRS.Queries.Services;
 
-public class ServiceGetByIdQuery : GetByIdQuery<ServiceResult>
+public class ServiceGetByIdQuery : GetByIdQuery
 {
 }

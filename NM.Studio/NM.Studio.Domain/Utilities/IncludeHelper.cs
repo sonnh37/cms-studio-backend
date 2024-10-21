@@ -21,7 +21,7 @@ public static class IncludeHelper
 
     private static IQueryable<Album> Album(IQueryable<Album> queryable)
     {
-        queryable = queryable.AsNoTracking()
+        queryable = queryable
             .Include(m => m.AlbumXPhotos).ThenInclude(m => m.Photo);
 
         return queryable;
@@ -29,7 +29,7 @@ public static class IncludeHelper
 
     private static IQueryable<Outfit> Outfit(IQueryable<Outfit> queryable)
     {
-        queryable = queryable.AsNoTracking()
+        queryable = queryable
             .Include(m => m.Size)
             .Include(m => m.Category)
             .Include(m => m.Color)
@@ -40,14 +40,14 @@ public static class IncludeHelper
 
     private static IQueryable<Service> Service(IQueryable<Service> queryable)
     {
-        queryable = queryable.AsNoTracking();
+        queryable = queryable;
 
         return queryable;
     }
 
     private static IQueryable<Photo> Photo(IQueryable<Photo> queryable)
     {
-        queryable = queryable.AsNoTracking()
+        queryable = queryable
             .Include(m => m.OutfitXPhotos).ThenInclude(m => m.Outfit)
             .Include(m => m.AlbumsXPhotos).ThenInclude(m => m.Album);
 

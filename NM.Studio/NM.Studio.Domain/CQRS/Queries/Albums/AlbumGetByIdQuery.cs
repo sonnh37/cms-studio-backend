@@ -3,6 +3,6 @@ using NM.Studio.Domain.Models.Results;
 
 namespace NM.Studio.Domain.CQRS.Queries.Albums;
 
-public class AlbumGetByIdQuery : GetByIdQuery<AlbumResult>
+public class AlbumGetByIdQuery : GetByIdQuery
 {
 }

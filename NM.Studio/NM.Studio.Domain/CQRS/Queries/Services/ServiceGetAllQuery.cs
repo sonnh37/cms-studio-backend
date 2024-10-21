@@ -3,7 +3,7 @@ using NM.Studio.Domain.Models.Results;
 
 namespace NM.Studio.Domain.CQRS.Queries.Services;
 
-public class ServiceGetAllQuery : GetAllQuery<ServiceResult>
+public class ServiceGetAllQuery : GetAllQuery
 {
     public string? Name { get; set; }
 

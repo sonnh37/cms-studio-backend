@@ -4,7 +4,7 @@ using NM.Studio.Domain.Models.Results;
 
 namespace NM.Studio.Domain.CQRS.Queries.Users;
 
-public class UserGetAllQuery : GetAllQuery<UserResult>
+public class UserGetAllQuery : GetAllQuery
 {
     public string? FirstName { get; set; }
 

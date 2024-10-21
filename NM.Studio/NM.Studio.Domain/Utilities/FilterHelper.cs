@@ -8,12 +8,13 @@ using NM.Studio.Domain.CQRS.Queries.Services;
 using NM.Studio.Domain.CQRS.Queries.Users;
 using NM.Studio.Domain.Entities;
 using NM.Studio.Domain.Entities.Bases;
+using NM.Studio.Domain.Utilities.Filters;
 
 namespace NM.Studio.Domain.Utilities;
 
 public static class FilterHelper
 {
-    public static IQueryable<TEntity>? Apply<TEntity>(IQueryable<TEntity>? queryable, GetQueryableQuery query)
+    public static IQueryable<TEntity>? Apply<TEntity>(IQueryable<TEntity> queryable, GetQueryableQuery query)
         where TEntity : BaseEntity
     {
         return query switch
@@ -23,32 +24,37 @@ public static class FilterHelper
             PhotoGetAllQuery photoQuery => Photo(queryable as IQueryable<Photo>, photoQuery) as IQueryable<TEntity>,
             ServiceGetAllQuery serviceQuery =>
                 Service(queryable as IQueryable<Service>, serviceQuery) as IQueryable<TEntity>,
-            AlbumGetAllQuery albumQuery => Album(queryable as IQueryable<Album>, albumQuery) as IQueryable<TEntity>,
+            AlbumGetAllQuery albumQuery => Album((queryable as IQueryable<Album>)!, albumQuery) as IQueryable<TEntity>,
             UserGetAllQuery userQuery => User(queryable as IQueryable<User>, userQuery) as IQueryable<TEntity>,
             CategoryGetAllQuery cateQuery =>
-                Category(queryable as IQueryable<Category>, cateQuery) as IQueryable<TEntity>,
-            _ => Base(queryable, query)
+                Category((queryable as IQueryable<Category>)!, cateQuery) as IQueryable<TEntity>,
+            _ => BaseFilterHelper.Base(queryable, query)
         };
     }
 
-    private static IQueryable<Category>? Category(IQueryable<Category>? queryable, CategoryGetAllQuery query)
+    private static IQueryable<Category> Category(IQueryable<Category> queryable, CategoryGetAllQuery query)
     {
         if (query.Name != null)
             queryable = queryable.Where(m => m.Name != null && m.Name.ToLower().Trim() == query.Name.ToLower().Trim());
 
-        return Base(queryable, query);
+        queryable = BaseFilterHelper.Base(queryable, query);
+
+        return queryable;
     }
 
     private static IQueryable<Outfit>? Outfit(IQueryable<Outfit>? queryable, OutfitGetAllQuery query)
     {
         if (query.CategoryId != null) queryable = queryable.Where(m => m.CategoryId == query.CategoryId);
-        queryable = queryable.AsNoTracking().Include(m => m.OutfitXPhotos).ThenInclude(m => m.Photo);
-        return Base(queryable, query);
+        
+        queryable = BaseFilterHelper.Base(queryable, query);
+
+        return queryable;
     }
 
     private static IQueryable<Photo>? Photo(IQueryable<Photo>? queryable, PhotoGetAllQuery query)
     {
-        return Base(queryable, query);
+        queryable = BaseFilterHelper.Base(queryable, query);
+        return queryable;
     }
 
     private static IQueryable<Service>? Service(IQueryable<Service>? queryable, ServiceGetAllQuery query)
@@ -58,8 +64,10 @@ public static class FilterHelper
             var title = SlugHelper.FromSlug(query.Name.ToLower());
             queryable = queryable.Where(m => m.Name!.ToLower() == title);
         }
+        
+        queryable = BaseFilterHelper.Base(queryable, query);
 
-        return Base(queryable, query);
+        return queryable;
     }
 
     private static IQueryable<Album> Album(IQueryable<Album> queryable, AlbumGetAllQuery query)
@@ -73,9 +81,9 @@ public static class FilterHelper
         if (!string.IsNullOrEmpty(query.Description))
             queryable = queryable.Where(m => m.Description!.ToLower().Contains(query.Description.ToLower()));
 
-        if (query.IsDeleted.HasValue) queryable = queryable.Where(m => m.IsDeleted == query.IsDeleted.Value);
+        queryable = BaseFilterHelper.Base(queryable, query);
 
-        return Base(queryable, query);
+        return queryable;
     }
 
 
@@ -104,38 +112,10 @@ public static class FilterHelper
 
         if (!string.IsNullOrEmpty(query.Phone))
             queryable = queryable.Where(e => e.Phone.Contains(query.Phone));
-
-        return Base(queryable, query);
-    }
-
-    private static IQueryable<TEntity>? FromDateToDate<TEntity>(IQueryable<TEntity>? queryable, GetQueryableQuery query)
-        where TEntity : BaseEntity
-    {
-        if (query.FromDate.HasValue)
-            queryable = queryable.Where(entity => entity.CreatedDate >= query.FromDate.Value);
-
-        if (query.ToDate.HasValue)
-            queryable = queryable.Where(entity => entity.CreatedDate <= query.ToDate.Value);
+        
+        queryable = BaseFilterHelper.Base(queryable, query);
 
         return queryable;
     }
 
-    private static IQueryable<TEntity>? Base<TEntity>(IQueryable<TEntity>? queryable, GetQueryableQuery query)
-        where TEntity : BaseEntity
-    {
-        if (!string.IsNullOrEmpty(query.CreatedBy))
-            queryable = queryable.Where(m => m.CreatedBy != null && m.CreatedBy.Contains(query.CreatedBy));
-
-        if (!string.IsNullOrEmpty(query.LastUpdatedBy))
-            queryable = queryable.Where(m =>
-                query.LastUpdatedBy != null && m.LastUpdatedBy != null &&
-                m.LastUpdatedBy.Contains(query.LastUpdatedBy));
-
-        if (query.IsDeleted.HasValue)
-            queryable = queryable.Where(m => m.IsDeleted == query.IsDeleted);
-
-        queryable = FromDateToDate(queryable, query);
-
-        return queryable;
-    }
 }

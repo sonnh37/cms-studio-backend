@@ -3,7 +3,7 @@ using NM.Studio.Domain.Models.Results;
 
 namespace NM.Studio.Domain.CQRS.Queries.Photos;
 
-public class PhotoGetAllQuery : GetAllQuery<PhotoResult>
+public class PhotoGetAllQuery : GetAllQuery
 {
     public string? Title { get; set; }
 

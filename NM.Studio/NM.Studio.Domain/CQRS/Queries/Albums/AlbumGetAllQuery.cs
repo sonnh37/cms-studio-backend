@@ -3,7 +3,7 @@ using NM.Studio.Domain.Models.Results;
 
 namespace NM.Studio.Domain.CQRS.Queries.Albums;
 
-public class AlbumGetAllQuery : GetAllQuery<AlbumResult>
+public class AlbumGetAllQuery : GetAllQuery
 {
     public string? Title { get; set; }
 

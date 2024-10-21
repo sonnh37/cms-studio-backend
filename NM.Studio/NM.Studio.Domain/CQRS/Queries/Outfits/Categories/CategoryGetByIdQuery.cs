@@ -3,6 +3,6 @@ using NM.Studio.Domain.Models.Results;
 
 namespace NM.Studio.Domain.CQRS.Queries.Outfits.Categories;
 
-public class CategoryGetByIdQuery : GetByIdQuery<CategoryResult>
+public class CategoryGetByIdQuery : GetByIdQuery
 {
 }

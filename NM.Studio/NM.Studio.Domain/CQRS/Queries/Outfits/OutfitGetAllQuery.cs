@@ -4,7 +4,7 @@ using NM.Studio.Domain.Models.Results;
 
 namespace NM.Studio.Domain.CQRS.Queries.Outfits;
 
-public class OutfitGetAllQuery : GetAllQuery<OutfitResult>
+public class OutfitGetAllQuery : GetAllQuery
 {
     public string? Sku { get; set; }
 

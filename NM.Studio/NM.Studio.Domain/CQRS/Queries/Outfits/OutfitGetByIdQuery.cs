@@ -3,6 +3,6 @@ using NM.Studio.Domain.Models.Results;
 
 namespace NM.Studio.Domain.CQRS.Queries.Outfits;
 
-public class OutfitGetByIdQuery : GetByIdQuery<OutfitResult>
+public class OutfitGetByIdQuery : GetByIdQuery
 {
 }
